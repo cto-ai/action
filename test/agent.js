@@ -135,47 +135,6 @@ const test_extractBody_pr_closed = (function test_extractBody_pr_closed() {
   console.log("[ OK ]", arguments.callee.name);
 })();
 
-// pr opened
-const test_extractBody = (function test_extractBody() {
-  const github_context = {
-    context: {
-      payload: {
-        action: "closed",
-        pull_request: {
-          base: {
-            ref: "master",
-          },
-          head: {
-            ref: "branch1",
-          },
-        },
-      },
-      eventName: "pull_request",
-      ref: "master",
-    },
-  };
-
-  const actual = extractBody("team-id-123", github_context);
-  const expected = {
-    stage: "Change",
-    status: "Succeeded",
-    change_id: "branch1",
-    team_id: "team-id-123",
-    custom: {
-      context: {
-        payload: {
-          action: "closed",
-          pull_request: { base: { ref: "master" }, head: { ref: "branch1" } },
-        },
-        eventName: "pull_request",
-        ref: "master",
-      },
-    },
-  };
-  assert.deepStrictEqual(actual, expected);
-  console.log("[ OK ]", arguments.callee.name);
-})();
-
 // When user supplies no input, GitHub supplies empty/null/undef values for various
 // params. These empty params need to be detected and then the GitHub object
 // values used instead to infer the event info.

@@ -1,5 +1,5 @@
-name: 'ctoai-agent'
-description: 'CTOai Delivery Metrics'
+name: 'CTO.ai GitHub Action'
+description: 'The CTO.ai GitHub Action supports CTO.ai Lifecycle & Delivery Metrics'
 inputs:
   token:
     description: 'Authorization Token'
@@ -24,15 +24,6 @@ inputs:
     required: false
   custom:
     description: 'Custom Payload'
-    required: false
-  gh_event:
-    description: 'GitHub Agent Event Context'
-    required: false
-  gh_steps:
-    description: 'GitHub Agent Steps Context'
-    required: false
-  gh_runner:
-    description: 'GitHub Agent Runner Context'
     required: false
 runs:
   using: 'node12'

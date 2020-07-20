@@ -10,7 +10,9 @@ const printTestSuccess = (fnName) => {
 }
 
 const test_sendEvent_failure = (async function test_sendEvent_failure() {
+
   const body = { abc: "xyz" };
+
   const token = "tokenxyz";
 
   const fetchMock = (url_in, opts_in) => {
@@ -21,15 +23,20 @@ const test_sendEvent_failure = (async function test_sendEvent_failure() {
   };
 
   const actual = await sendEvent(body, token, "https://urlabc.tld", fetchMock);
+
   const expected = {
     HTTPErrorStatus: 403,
     HTTPErrorStatusText: 'Forbidden'
   };
+
   assert.deepStrictEqual(actual, expected);
+
 })();
 
 const test_sendEvent_success = (async function test_sendEvent_success() {
+
   const body = { abc: "xyz" };
+
   const token = "tokenxyz";
 
   const fetchMock = (url_in, opts_in) => {
@@ -40,6 +47,7 @@ const test_sendEvent_success = (async function test_sendEvent_success() {
   };
 
   const actual = await sendEvent(body, token, "https://urlabc.tld", fetchMock);
+
   const expected = JSON.stringify({
     url_in: "https://urlabc.tld",
     opts_in: {
@@ -51,8 +59,11 @@ const test_sendEvent_success = (async function test_sendEvent_success() {
       body: '{"abc":"xyz"}',
     },
   });
+
   assert.deepStrictEqual(actual, expected);
+
   printTestSuccess(arguments.callee.name);
+
 })();
 
 // weird context
@@ -76,11 +87,14 @@ const test_extractBody_weird_context = (function test_extractBody_weird_context(
 
   assert.deepStrictEqual(actual, expected);
 
+  printTestSuccess(arguments.callee.name);
+
 })();
 
 
 // passthru
 const test_extractBody_passthrough = (function test_extractBody_passthrough() {
+
   const github_context = {
     context: {
       payload: {
@@ -98,7 +112,9 @@ const test_extractBody_passthrough = (function test_extractBody_passthrough() {
       ref: "master",
     },
   };
+
   const actual = extractBody("team-id-123", github_context);
+
   const expected = {
     stage: "arbitrary_event",
     status: "unknown_action",
@@ -118,12 +134,16 @@ const test_extractBody_passthrough = (function test_extractBody_passthrough() {
       },
     },
   };
+
   assert.deepStrictEqual(actual, expected);
+
   printTestSuccess(arguments.callee.name);
+
 })();
 
 // pr closed
 const test_extractBody_pr_closed = (function test_extractBody_pr_closed() {
+
   const github_context = {
     context: {
       payload: {
@@ -141,7 +161,9 @@ const test_extractBody_pr_closed = (function test_extractBody_pr_closed() {
       ref: "master",
     },
   };
+
   const actual = extractBody("team-id-123", github_context);
+
   const expected = {
     stage: "Change",
     status: "Succeeded",
@@ -158,14 +180,18 @@ const test_extractBody_pr_closed = (function test_extractBody_pr_closed() {
       },
     },
   };
+
   assert.deepStrictEqual(actual, expected);
+
   printTestSuccess(arguments.callee.name);
+
 })();
 
 // When user supplies no input, GitHub supplies empty/null/undef values for various
 // params. These empty params need to be detected and then the GitHub object
 // values used instead to infer the event info.
 const test_constructBody_pr_closed = (function test_constructBody_pr_closed() {
+
   const github_pull_request_closed = {
     context: {
       payload: {
@@ -219,11 +245,14 @@ const test_constructBody_pr_closed = (function test_constructBody_pr_closed() {
   };
 
   assert.deepStrictEqual(actual, expected);
+
   printTestSuccess(arguments.callee.name);
+
 })();
 
 // when the user supplies no input, resulting in empty params
 const test_constructBody_pr_opened = (function test_constructBody_pr_opened() {
+
   const github_pull_request_opened = {
     context: {
       payload: {
@@ -275,13 +304,17 @@ const test_constructBody_pr_opened = (function test_constructBody_pr_opened() {
       },
     },
   };
+
   assert.deepStrictEqual(actual, expected);
+
   printTestSuccess(arguments.callee.name);
+
 })();
 
 // Even when given the PR opened metadata from GitHub,
 // the user supplied data should overwrite it.
 const test_constructBody_user_action = (function test_constructBody_user_action() {
+
   const github_pull_request_opened = {
     context: {
       payload: {
@@ -320,5 +353,7 @@ const test_constructBody_user_action = (function test_constructBody_user_action(
   };
 
   assert.deepStrictEqual(actual, expected);
+
   printTestSuccess(arguments.callee.name);
+
 })();

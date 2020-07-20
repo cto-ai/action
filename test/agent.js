@@ -31,6 +31,8 @@ const test_sendEvent_failure = (async function test_sendEvent_failure() {
 
   assert.deepStrictEqual(actual, expected);
 
+  printTestSuccess(arguments.callee.name);
+
 })();
 
 const test_sendEvent_success = (async function test_sendEvent_success() {

@@ -1,0 +1,39 @@
+name: 'ctoai-agent'
+description: 'CTOai Delivery Metrics'
+inputs:
+  token:
+    description: 'Authorization Token'
+    required: true
+  team_id:
+    description: 'Team ID'
+    required: true
+  stage:
+    description: 'Stage'
+    required: false
+  status:
+    description: 'Status'
+    required: false
+  stage_ref:
+    description: 'Stage'
+    required: false
+  change_id:
+    description: 'Change ID'
+    required: false
+  pipeline_id:
+    description: 'Pipeline ID'
+    required: false
+  custom:
+    description: 'Custom Payload'
+    required: false
+  gh_event:
+    description: 'GitHub Agent Event Context'
+    required: false
+  gh_steps:
+    description: 'GitHub Agent Steps Context'
+    required: false
+  gh_runner:
+    description: 'GitHub Agent Runner Context'
+    required: false
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

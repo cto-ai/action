@@ -10246,8 +10246,13 @@ const has = __webpack_require__(521);
 const extractBody = (team_id,github) => {
 
   // Treat PR opened against master as Change Initiated
-  if (github.context.eventName === "pull_request" &&
+  if (has(github, ["context","eventName"]) &&
+      github.context.eventName === "pull_request" &&
+
+      has(github, ["context","payload","pull_request","base","ref"]) &&
       github.context.payload.pull_request.base.ref === "master" && 
+
+      has(github, ["context","payload","action"]) &&
       github.context.payload.action === "opened") {
     return ({
       stage: "Change",
@@ -10259,8 +10264,13 @@ const extractBody = (team_id,github) => {
   }
 
   // Treat PR merged to master as Change Succeeded
-  if (github.context.eventName === "pull_request" &&
+  if (has(github, ["context","eventName"]) &&
+      github.context.eventName === "pull_request" &&
+
+      has(github, ["context","payload","pull_request","base","ref"]) &&
       github.context.payload.pull_request.base.ref === "master" && 
+
+      has(github, ["context","payload","action"]) &&
       github.context.payload.action === "closed") {
     return ({
       stage: "Change",
@@ -10284,8 +10294,8 @@ const extractBody = (team_id,github) => {
 
   // Store data for events that haven't already matched
   return ({
-    stage: github.context.eventName,
-    status: github.context.payload.action,
+    stage: has(github, ["context","eventName"]) ? github.context.eventName : undefined,
+    status: has(github, ["context","payload","action"]) ? github.context.payload.action : undefined,
     change_id,
     team_id,
     custom: github

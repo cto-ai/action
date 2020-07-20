@@ -1,7 +1,7 @@
 {
   "name": "ctoai-action",
   "version": "1.0.0",
-  "description": "CTO.ai GitHub Action support CTO.ai Lifecycle & Delivery Metrics",
+  "description": "CTO.ai GitHub Action to support CTO.ai Lifecycle & Delivery Metrics",
   "main": "index.js",
   "keywords": [],
   "author": "CTO.ai",

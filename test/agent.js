@@ -52,6 +52,31 @@ const test_sendEvent_success = (async function test_sendEvent_success() {
   console.log("[ OK ]", arguments.callee.name);
 })();
 
+// weird context
+const test_extractBody_weird_context = (function test_extractBody_weird_context() {
+
+  const github_context = {
+    "weird": {
+      xyz: "abc"
+    },
+  };
+
+  const actual = extractBody("team-id-123", github_context);
+
+  const expected = {
+    stage: undefined,
+    status: undefined,
+    change_id: '',
+    team_id: 'team-id-123',
+    custom: { weird: { xyz: 'abc' } }
+  };
+
+  assert.deepStrictEqual(actual, expected);
+  console.log("[ OK ]", arguments.callee.name);
+
+})();
+
+
 // passthru
 const test_extractBody_passthrough = (function test_extractBody_passthrough() {
   const github_context = {

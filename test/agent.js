@@ -5,6 +5,10 @@ const sendEvent = require("../agent.js").sendEvent;
 const constructBody = require("../agent.js").constructBody;
 const extractBody = require("../agent.js").extractBody;
 
+const printTestSuccess = (fnName) => {
+  console.log("[ \u001b[32mOK\u001b[0m ]", fnName);
+}
+
 const test_sendEvent_failure = (async function test_sendEvent_failure() {
   const body = { abc: "xyz" };
   const token = "tokenxyz";
@@ -22,7 +26,6 @@ const test_sendEvent_failure = (async function test_sendEvent_failure() {
     HTTPErrorStatusText: 'Forbidden'
   };
   assert.deepStrictEqual(actual, expected);
-  console.log("[ OK ]", arguments.callee.name);
 })();
 
 const test_sendEvent_success = (async function test_sendEvent_success() {
@@ -49,7 +52,7 @@ const test_sendEvent_success = (async function test_sendEvent_success() {
     },
   });
   assert.deepStrictEqual(actual, expected);
-  console.log("[ OK ]", arguments.callee.name);
+  printTestSuccess(arguments.callee.name);
 })();
 
 // weird context
@@ -72,7 +75,6 @@ const test_extractBody_weird_context = (function test_extractBody_weird_context(
   };
 
   assert.deepStrictEqual(actual, expected);
-  console.log("[ OK ]", arguments.callee.name);
 
 })();
 
@@ -117,7 +119,7 @@ const test_extractBody_passthrough = (function test_extractBody_passthrough() {
     },
   };
   assert.deepStrictEqual(actual, expected);
-  console.log("[ OK ]", arguments.callee.name);
+  printTestSuccess(arguments.callee.name);
 })();
 
 // pr closed
@@ -157,7 +159,7 @@ const test_extractBody_pr_closed = (function test_extractBody_pr_closed() {
     },
   };
   assert.deepStrictEqual(actual, expected);
-  console.log("[ OK ]", arguments.callee.name);
+  printTestSuccess(arguments.callee.name);
 })();
 
 // When user supplies no input, GitHub supplies empty/null/undef values for various
@@ -217,7 +219,7 @@ const test_constructBody_pr_closed = (function test_constructBody_pr_closed() {
   };
 
   assert.deepStrictEqual(actual, expected);
-  console.log("[ OK ]", arguments.callee.name);
+  printTestSuccess(arguments.callee.name);
 })();
 
 // when the user supplies no input, resulting in empty params
@@ -274,7 +276,7 @@ const test_constructBody_pr_opened = (function test_constructBody_pr_opened() {
     },
   };
   assert.deepStrictEqual(actual, expected);
-  console.log("[ OK ]", arguments.callee.name);
+  printTestSuccess(arguments.callee.name);
 })();
 
 // Even when given the PR opened metadata from GitHub,
@@ -318,5 +320,5 @@ const test_constructBody_user_action = (function test_constructBody_user_action(
   };
 
   assert.deepStrictEqual(actual, expected);
-  console.log("[ OK ]", arguments.callee.name);
+  printTestSuccess(arguments.callee.name);
 })();

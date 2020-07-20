@@ -14,7 +14,7 @@ inputs:
     description: 'Status'
     required: false
   stage_ref:
-    description: 'Stage'
+    description: 'Stage Reference'
     required: false
   change_id:
     description: 'Change ID'

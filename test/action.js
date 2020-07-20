@@ -1,9 +1,9 @@
 const assert = require("assert").strict;
 const cloneDeep = require("lodash.clonedeep");
 
-const sendEvent = require("../agent.js").sendEvent;
-const constructBody = require("../agent.js").constructBody;
-const extractBody = require("../agent.js").extractBody;
+const sendEvent = require("../action.js").sendEvent;
+const constructBody = require("../action.js").constructBody;
+const extractBody = require("../action.js").extractBody;
 
 const printTestSuccess = (fnName) => {
   console.log("[ \u001b[32mOK\u001b[0m ]", fnName);

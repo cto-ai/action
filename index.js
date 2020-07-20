@@ -4,8 +4,8 @@ const fetch = require('node-fetch');
 const cloneDeep = require('lodash.clonedeep');
 const has = require('lodash.has');
 
-const sendEvent = require('./agent.js').sendEvent;
-const constructBody = require('./agent.js').constructBody;
+const sendEvent = require('./action.js').sendEvent;
+const constructBody = require('./action.js').constructBody;
 
 // PRD URL needs to be available in plaintext in the Action, so the public can use it.
 const CTOAI_EVENTS_API_URL = (process.env.CTOAI_EVENTS_API_URL ? process.env.CTOAI_EVENTS_API_URL : "https://api.cto.sh/api/v1/events");

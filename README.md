@@ -60,6 +60,8 @@ The CTO.ai steps that you can add to your workflows look like this:
 See a live example of this instrumentation in the [deployment-action-example](https://github.com/cto-ai/deployment-action-example)
 repo, which instruments an Azure deployment pipeline.
 
-The CTO.ai GitHub Action accepts the same parameters as the regular CTO.ai Delivery Metrics APIs, which are explained in greater detail at the [CTO.ai Official Documentation](cto.ai/docs/delivery-metrics).
+The CTO.ai GitHub Action accepts the same parameters as the regular CTO.ai
+Delivery Metrics APIs, which are explained in greater detail at the
+[CTO.ai Official Documentation](cto.ai/docs/delivery-metrics).
 
 

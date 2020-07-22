@@ -3,7 +3,7 @@ const cloneDeep = require("lodash.clonedeep");
 
 const sendEvent = require("../action.js").sendEvent;
 const constructBody = require("../action.js").constructBody;
-const extractBody = require("../action.js").extractBody;
+const getBodyFromGitHubContext = require("../action.js").getBodyFromGitHubContext;
 
 const printTestSuccess = (fnName) => {
   console.log("[ \u001b[32mOK\u001b[0m ]", fnName);
@@ -69,7 +69,7 @@ const test_sendEvent_success = (async function test_sendEvent_success() {
 })();
 
 // weird context
-const test_extractBody_weird_context = (function test_extractBody_weird_context() {
+const test_getBodyFromGitHubContext_weird_context = (function test_getBodyFromGitHubContext_weird_context() {
 
   const github_context = {
     "weird": {
@@ -77,7 +77,7 @@ const test_extractBody_weird_context = (function test_extractBody_weird_context(
     },
   };
 
-  const actual = extractBody("team-id-123", github_context);
+  const actual = getBodyFromGitHubContext("team-id-123", github_context);
 
   const expected = {
     stage: undefined,
@@ -95,7 +95,7 @@ const test_extractBody_weird_context = (function test_extractBody_weird_context(
 
 
 // passthru
-const test_extractBody_passthrough = (function test_extractBody_passthrough() {
+const test_getBodyFromGitHubContext_passthrough = (function test_getBodyFromGitHubContext_passthrough() {
 
   const github_context = {
     context: {
@@ -115,7 +115,7 @@ const test_extractBody_passthrough = (function test_extractBody_passthrough() {
     },
   };
 
-  const actual = extractBody("team-id-123", github_context);
+  const actual = getBodyFromGitHubContext("team-id-123", github_context);
 
   const expected = {
     stage: "arbitrary_event",
@@ -144,7 +144,7 @@ const test_extractBody_passthrough = (function test_extractBody_passthrough() {
 })();
 
 // pr closed
-const test_extractBody_pr_closed = (function test_extractBody_pr_closed() {
+const test_getBodyFromGitHubContext_pr_closed = (function test_getBodyFromGitHubContext_pr_closed() {
 
   const github_context = {
     context: {
@@ -164,7 +164,7 @@ const test_extractBody_pr_closed = (function test_extractBody_pr_closed() {
     },
   };
 
-  const actual = extractBody("team-id-123", github_context);
+  const actual = getBodyFromGitHubContext("team-id-123", github_context);
 
   const expected = {
     stage: "Change",

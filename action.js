@@ -8,11 +8,6 @@
 const cloneDeep = require('lodash.clonedeep');
 const has = require('lodash.has');
 
-// Determine if GitHub context is a pull request
-const isPullRequest(github) {
-  return has(github, ["context","eventName"]) && github.context.eventName === "pull_request");
-}
-
 //
 //  PURPOSE
 //
@@ -39,10 +34,10 @@ const isPullRequest(github) {
 //
 //  EXAMPLE
 //
-// const http_body = extractBody("aef3d53", {context:{}});
+// const http_body = getBodyFromGitHubContext("aef3d53", {context:{}});
 //
 //
-const extractBody = (team_id, github) => {
+const getBodyFromGitHubContext = (team_id, github) => {
 
   //
   // TODO1: Capture deployment events (see "GitHub deployment events")
@@ -108,7 +103,7 @@ has(github, ["context","payload","action"]) && github.context.payload.action ===
     custom: github
   });
 };
-module.exports.extractBody = extractBody;
+module.exports.getBodyFromGitHubContext = getBodyFromGitHubContext;
 
 //
 // This function takes various input parameters that the GitHub Action has
@@ -126,6 +121,11 @@ const constructBody = ( change_id,
                         stage,
                         status,
                         team_id ) => {
+  //
+  // The precense of any of these values below implies the user wants to specify
+  // all of them. In which case, we won't use the GitHub Context object to
+  // populate the event API body (we just return all existing values instead).
+  //
   if (change_id || custom || pipeline_id || stage || status) {
     return ({
       change_id,
@@ -136,7 +136,7 @@ const constructBody = ( change_id,
       team_id
     });
   } else {
-    return extractBody(team_id, cloneDeep(github));
+    return getBodyFromGitHubContext(team_id, cloneDeep(github));
   }
 };
 module.exports.constructBody = constructBody;

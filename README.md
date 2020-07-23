@@ -12,8 +12,8 @@ dashboard.
 ### Install Agent
 
 1. From your GitHub repo, click Settings -> Secrets -> New Secret
-  1.1. Create CTOAI_TEAM_ID secret using your CTO.ai-issued Team Id.
-  1.2. Create CTOAI_EVENTS_API_TOKEN secret using your CTO.ai-issued API Token.
+  - Create CTOAI_TEAM_ID secret using your CTO.ai-issued Team Id.
+  - Create CTOAI_EVENTS_API_TOKEN secret using your CTO.ai-issued API Token.
 2. Access the CTO.ai Agent workflow from:
   - https://github.com/cto-ai/agent/blob/master/.github/workflows/ctoai-agent.yml
 3. Place `ctoai-agent.yml` in the workflows folder of your repo:

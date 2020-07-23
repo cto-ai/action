@@ -127,7 +127,10 @@ const constructBody = ( change_id,
   if (change_id || custom || pipeline_id || stage || status) {
     return ({
       change_id,
-      custom,
+
+      // the API does not accept empty string or undefined for custom, it must
+      // be null or empty object '{}'
+      custom : custom ? custom : null,
       pipeline_id,
       stage,
       status,

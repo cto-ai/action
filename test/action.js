@@ -471,3 +471,44 @@ const test_constructBody_user_action = (function test_constructBody_user_action(
   assert.deepStrictEqual(actual, expected);
   printTestSuccess(arguments.callee.name);
 })();
+
+// API does not accept empty string or undefined for empty 'custom' field. Must
+// be {} or null.
+const test_constructBody_null_custom = (function test_constructBody_user_action() {
+  const github_pull_request_opened = {
+    context: {
+      payload: {
+        action: "opened",
+        pull_request: {
+          base: {
+            ref: "master",
+          },
+          head: {
+            ref: "branch1",
+          },
+        },
+      },
+      eventName: "pull_request",
+      ref: "master",
+    },
+  };
+  const actual = constructBody(
+    "change-id-abc123",
+    '',
+    github_pull_request_opened,
+    "pipeline-id-hijk",
+    "test-stage-A",
+    "test-status-B",
+    "team-id-123"
+  );
+  expected = {
+    change_id: "change-id-abc123",
+    custom: null,
+    pipeline_id: "pipeline-id-hijk",
+    stage: "test-stage-A",
+    status: "test-status-B",
+    team_id: "team-id-123",
+  };
+  assert.deepStrictEqual(actual, expected);
+  printTestSuccess(arguments.callee.name);
+})();

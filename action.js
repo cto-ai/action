@@ -7,6 +7,7 @@
 
 const cloneDeep = require('lodash.clonedeep');
 const has = require('lodash.has');
+const get = require('lodash.get');
 
 //
 //  PURPOSE
@@ -36,68 +37,65 @@ const has = require('lodash.has');
 //
 // const http_body = getBodyFromGitHubContext("aef3d53", {context:{}});
 //
-//
 const getBodyFromGitHubContext = (team_id, github) => {
-
-  //
   // TODO1: Capture deployment events (see "GitHub deployment events")
   // TODO2: Capture other events in the Lifecycle Catalog
-  //
-  //
 
-  // Detect Change Initiated (Pull Request Opened against Master)
-  if (
+  // Defines the named event in terms of a set of matching values embedded in
+  // the github context object.
+  const event_defs = [
+    { ctoai_event:"Change Initiated",
+      conditions: [
+        [ ["context","eventName"], "pull_request" ],
+        [ ["context","payload","pull_request","base","ref"], "master" ],
+        [ ["context","payload","action"], "opened" ]
+      ]
+    },
+    { ctoai_event:"Change Succeeded",
+      conditions: [
+        [ ["context","eventName"], "pull_request" ],
+        [ ["context","payload","pull_request","base","ref"], "master" ],
+        [ ["context","payload","action"], "closed" ]
+      ]
+    }
+  ];
 
-// is a pull request
-has(github, ["context","eventName"]) && github.context.eventName === "pull_request" &&
-
-// is against master
-has(github, ["context","payload","pull_request","base","ref"]) && github.context.payload.pull_request.base.ref === "master" &&
-
-// is opened
-has(github, ["context","payload","action"]) && github.context.payload.action === "opened"
-
-     ) {
-    return ({
+  // Defines the HTTP request body to be used by the event with the matching
+  // name.
+  const event_bodies = {
+    "Change Initiated" : {
       stage: "Change",
       status: "Initiated",
-      change_id: github.context.payload.pull_request.head.ref,
+      change_id: get(github, ["context","payload","pull_request","head","ref"]),
       team_id,
       custom: github
-    });
-  }
-
-  // Detect Change Succeeded (Pull Request Closed against Master)
-  if (has(github, ["context","eventName"]) &&
-      github.context.eventName === "pull_request" &&
-
-      has(github, ["context","payload","pull_request","base","ref"]) &&
-      github.context.payload.pull_request.base.ref === "master" &&
-
-      has(github, ["context","payload","action"]) &&
-      github.context.payload.action === "closed") {
-    return ({
+    },
+    "Change Succeeded" : {
       stage: "Change",
       status: "Succeeded",
-      change_id: github.context.payload.pull_request.head.ref,
+      change_id: get(github, ["context","payload","pull_request","head","ref"]),
       team_id,
       custom: github
-    });
-  }
+    }
+  };
 
-  // Find something that can be used as change_id (last is highest priority).
+  // If the fn does not return here, then we don't have a hard match but will
+  // do a best-effort to fill in values.
+  const found_body = get(event_bodies, findEvent(github, event_defs));
+  if (found_body) return found_body;
+
+  // Best effort to find something that can be used as change_id (last is
+  // highest priority).
   let change_id = "";
-  if (has(github, ["context","ref"])) {
+  if (has(github, ["context","ref"]))
     change_id = github.context.ref;
-  }
-  if (has(github, ["context","payload","pull_request","head","ref"])) {
+  if (has(github, ["context","payload","pull_request","head","ref"]))
     change_id = github.context.payload.pull_request.head.ref;
-  }
 
-  // Store data for events that haven't already matched
+  // Best effort construct the HTTP request body
   return ({
-    stage: has(github, ["context","eventName"]) ? github.context.eventName : undefined,
-    status: has(github, ["context","payload","action"]) ? github.context.payload.action : undefined,
+    stage: get(github, ["context","eventName"]),
+    status: get(github, ["context","payload","action"]),
     change_id,
     team_id,
     custom: github
@@ -190,3 +188,30 @@ const sendEvent = (body, token, url, reqFn) => {
   );
 };
 module.exports.sendEvent = sendEvent;
+
+//
+// Checks for a matching value in a deeply object
+//
+// conditions_array[0]  path   []string    path to element in obj
+// conditions_array[1]  value  primitive   value we expect to be at the given path
+//
+const isMatch = (github, conditions_array) => {
+  return get(github, conditions_array[0]) === conditions_array[1];
+}
+module.exports.isMatch = isMatch;
+
+//
+// event_def is a data structure that defines each event in terms of matching
+// certain values in the github context object. This function determines which
+// event has occurred, returning the name of the first event that matches.
+//
+const findEvent = (github, event_defs) => {
+  return get(event_defs.find(e => allPathsMatch(github, e.conditions)), "ctoai_event");
+}
+module.exports.findEvent = findEvent;
+
+const allPathsMatch = (github, conditions) => {
+  return conditions.every((arg) => isMatch(github, arg));
+}
+module.exports.allPathsMatch = allPathsMatch;
+

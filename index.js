@@ -116,6 +116,7 @@ try {
     team_id
   );
 
+  console.log("body:\n",body);
   sendEvent(body, token, CTOAI_EVENTS_API_URL, fetch)
     .then(x => console.log("API Response:\n",x));
 

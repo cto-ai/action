@@ -1560,10 +1560,12 @@ try {
     team_id
   );
 
+  console.log("body:\n",body);
   sendEvent(body, token, CTOAI_EVENTS_API_URL, fetch)
     .then(x => console.log("API Response:\n",x));
 
 } catch (error) {
+  // signals a failure that GitHub Actions will use to fail the workflow step.
   core.setFailed(error.message);
 }
 

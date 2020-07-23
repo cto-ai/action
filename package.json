@@ -16,8 +16,8 @@
   },
   "scripts": {
     "build": "ncc build index.js",
-    "dev": "node index.js",
-    "test": "node test/*.js",
-    "prd": "node dist/index.js"
+    "dev": "export CTOAI_ACTION_ENVIRONMENT=dev; node index.js",
+    "prd": "export CTOAI_ACTION_ENVIRONMENT=prd; node index.js",
+    "test": "node test/*.js"
   }
 }

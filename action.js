@@ -180,7 +180,7 @@ const sendEvent = (body, token, url, reqFn) => {
 module.exports.sendEvent = sendEvent;
 
 //
-// Checks for a matching value in a deeply object
+// Checks for a matching value in a deep object
 //
 // conditions_array[0]  path   []string    path to element in obj
 // conditions_array[1]  value  primitive   value we expect to be at the given path

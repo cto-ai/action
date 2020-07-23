@@ -142,10 +142,7 @@ module.exports.constructBody = constructBody;
 //
 //  PURPOSE
 //
-// This function sets the necessary parameters, calls the HTTP request
-// function, and handles the output from the request function. reqFn should be
-// the standard fetch function, or a function that implements fetch's
-// interface.
+// Wraps the request to the HTTP API.
 //
 //
 //  INPUT
@@ -154,13 +151,6 @@ module.exports.constructBody = constructBody;
 // token  string     the API key supplied by CTO.ai to the user.
 // url    string     the CTO.ai events API URL.
 // reqFn  function   fetch, or a fetch standin
-//
-//
-//  OUTPUT
-//
-// Outputs a promise that, when resolved, calls a function that has, as its
-// first argument, an object containing either the HTTP response body or error
-// information.
 //
 //
 //  EXAMPLE

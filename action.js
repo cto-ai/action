@@ -120,7 +120,7 @@ const constructBody = ( change_id,
                         status,
                         team_id ) => {
   //
-  // The precense of any of these values below implies the user wants to specify
+  // The presence of any of these values below implies the user wants to specify
   // all of them. In which case, we won't use the GitHub Context object to
   // populate the event API body (we just return all existing values instead).
   //

@@ -35,7 +35,7 @@ The CTO.ai steps that you can add to your workflows look like this:
 ```
 - name: Report Build Succeeded
   if: ${{ success() }}
-  uses: ctoai/action@v1-beta
+  uses: cto-ai/action@v1-beta
   id: ctoai-build-succeeded
   with:
     team_id: ${{ secrets.CTOAI_TEAM_ID }}
@@ -46,7 +46,7 @@ The CTO.ai steps that you can add to your workflows look like this:
     pipeline-id: "your-pipeline-id1"
 - name: Report Build Failed
   if: ${{ failure() }}
-  uses: ctoai/action@v1-beta
+  uses: cto-ai/action@v1-beta
   id: ctoai-build-failed
   with:
     team_id: ${{ secrets.CTOAI_TEAM_ID }}

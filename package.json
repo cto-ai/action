@@ -1,0 +1,23 @@
+{
+  "name": "ctoai-action",
+  "version": "1.0.0",
+  "description": "CTO.ai GitHub Action to support CTO.ai Lifecycle & Delivery Metrics",
+  "main": "index.js",
+  "keywords": [],
+  "author": "CTO.ai",
+  "license": "ISC",
+  "dependencies": {
+    "@actions/core": "^1.2.4",
+    "@actions/github": "^4.0.0",
+    "lodash.clonedeep": "^4.5.0",
+    "lodash.get": "^4.4.2",
+    "lodash.has": "^4.5.2",
+    "node-fetch": "^2.6.0"
+  },
+  "scripts": {
+    "build": "ncc build index.js",
+    "dev": "export CTOAI_ACTION_ENVIRONMENT=dev; node index.js",
+    "prd": "export CTOAI_ACTION_ENVIRONMENT=prd; node index.js",
+    "test": "node test/*.js"
+  }
+}

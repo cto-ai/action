@@ -1,0 +1,30 @@
+name: 'CTO.ai GitHub Action'
+description: 'The CTO.ai GitHub Action supports CTO.ai Lifecycle & Delivery Metrics'
+inputs:
+  token:
+    description: 'Authorization Token'
+    required: true
+  team_id:
+    description: 'Team ID'
+    required: true
+  stage:
+    description: 'Stage'
+    required: false
+  status:
+    description: 'Status'
+    required: false
+  stage_ref:
+    description: 'Stage Reference'
+    required: false
+  change_id:
+    description: 'Change ID'
+    required: false
+  pipeline_id:
+    description: 'Pipeline ID'
+    required: false
+  custom:
+    description: 'Custom Payload'
+    required: false
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

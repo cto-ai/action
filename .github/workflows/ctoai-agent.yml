@@ -1,0 +1,50 @@
+#
+# This agent will automatically record (some) CTO.ai Delivery & LifeCycle
+# Metrics for use with the CTO.ai Delivery Metrics dashboard.
+#
+# Installation:
+#
+#   1. GitHub -> Settings -> Secrets -> New Secret
+#     - Create CTOAI_TEAM_ID secret using your CTO.ai-issued Team Id.
+#     - Create CTOAI_EVENTS_API_TOKEN secret using your CTO.ai-issued API Token.
+#   2. Drop this file into your GitHub repository at your-repo/.github/workflows/ctoai-agent.yml
+#
+#       Done! Delivery & LifeCycle Metrics will now be available at your CTO.ai Dashboard.
+#
+
+on:
+  create:
+  delete:
+  deployment_status:
+  fork:
+  gollum:
+  issue_comment:
+  issues:
+  label:
+  milestone:
+  page_build:
+  project:
+  project_card:
+  project_column:
+  public:
+  pull_request:
+     types: [assigned, opened, synchronize, reopened, closed]
+  pull_request_review:
+  pull_request_review_comment:
+  push:
+  registry_package:
+  release:
+  status:
+  watch:
+
+jobs:
+  ctoai-metrics:
+    name: Record CTOai Delivery Metrics
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'CTO.ai Delivery Metrics Agent Invocation'
+      uses: cto-ai/action@v1-beta
+      id: ctoai-agent
+      with:
+        team_id: ${{ secrets.CTOAI_TEAM_ID }}
+        token: ${{ secrets.CTOAI_EVENTS_API_TOKEN }}

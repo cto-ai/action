@@ -109,8 +109,8 @@ const getBodyFromGitHubContext = (team_id, github) => {
   return ({
     stage: snakeToTitleCase(get(github, ["context","eventName"])),
     status: snakeToTitleCase(get(github, ["context","payload","action"])),
-    change_id,
-    stage_ref,
+    change_id:change_id.replace('refs/heads/',''),
+    stage_ref:stage_ref.replace('refs/heads/',''),
     team_id,
     custom: github
   });

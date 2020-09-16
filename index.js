@@ -86,7 +86,7 @@ try {
     team_id,
     // Optional params
     change_id,
-    stage-ref,
+    stage_ref,
     custom,
     pipeline_id,
     stage,

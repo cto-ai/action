@@ -59,6 +59,7 @@ try {
       team_id : "team-id-123",
       token : CTOAI_EVENTS_API_TOKEN,
       change_id : "change-id-abc123",
+      change_id : "stage-ref-id-hjkl",
       custom : "{\"s\":[1,2,3],\"g\":4}",
       pipeline_id : "pipeline-id-hijk",
       stage : "test-stage-A",
@@ -71,6 +72,7 @@ try {
       team_id : core.getInput('team_id'),
       token : core.getInput('token'),
       change_id : core.getInput('change_id'),
+      stage_ref : core.getInput('stage_ref'),
       custom : core.getInput('custom'),
       pipeline_id : core.getInput('pipeline_id'),
       stage : core.getInput('stage'),
@@ -84,6 +86,7 @@ try {
     team_id,
     // Optional params
     change_id,
+    stage-ref,
     custom,
     pipeline_id,
     stage,
@@ -112,6 +115,7 @@ try {
     cloneDeep(github),
     pipeline_id,
     stage,
+    stage_ref,
     status,
     team_id
   );

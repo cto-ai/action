@@ -8,6 +8,13 @@
 const cloneDeep = require('lodash.clonedeep');
 const has = require('lodash.has');
 const get = require('lodash.get');
+const startCase = require('lodash.startcase');
+const camelCase =  require('lodash.camelcase');
+
+const snakeToTitleCase = (snake_str) => {
+ return startCase(camelCase(snake_str)).replace(' ','');
+}
+module.exports.snakeToTitleCase = snakeToTitleCase;
 
 //
 //  PURPOSE
@@ -67,6 +74,7 @@ const getBodyFromGitHubContext = (team_id, github) => {
       stage: "Change",
       status: "Initiated",
       change_id: get(github, ["context","payload","pull_request","head","ref"]),
+      stage_ref: get(github, ["context","payload","pull_request","head","ref"]),
       team_id,
       custom: github
     },
@@ -74,6 +82,7 @@ const getBodyFromGitHubContext = (team_id, github) => {
       stage: "Change",
       status: "Succeeded",
       change_id: get(github, ["context","payload","pull_request","head","ref"]),
+      stage_ref: get(github, ["context","payload","pull_request","head","ref"]),
       team_id,
       custom: github
     }
@@ -87,16 +96,21 @@ const getBodyFromGitHubContext = (team_id, github) => {
   // Best effort to find something that can be used as change_id (last is
   // highest priority).
   let change_id = "";
-  if (has(github, ["context","ref"]))
+  if (has(github, ["context","ref"])) {
     change_id = github.context.ref;
+    console.log("\n--- tmp debug log -------------------------------------------------------------------\n\n",JSON.stringify(github),"\n");
+  }
   if (has(github, ["context","payload","pull_request","head","ref"]))
     change_id = github.context.payload.pull_request.head.ref;
 
+  const stage_ref = change_id;
+
   // Best effort construct the HTTP request body
   return ({
-    stage: get(github, ["context","eventName"]),
-    status: get(github, ["context","payload","action"]),
+    stage: snakeToTitleCase(get(github, ["context","eventName"])),
+    status: snakeToTitleCase(get(github, ["context","payload","action"])),
     change_id,
+    stage_ref,
     team_id,
     custom: github
   });
@@ -117,6 +131,7 @@ const constructBody = ( change_id,
                         github,
                         pipeline_id,
                         stage,
+                        stage_ref,
                         status,
                         team_id ) => {
   //
@@ -124,7 +139,7 @@ const constructBody = ( change_id,
   // all of them. In which case, we won't use the GitHub Context object to
   // populate the event API body (we just return all existing values instead).
   //
-  if (change_id || custom || pipeline_id || stage || status) {
+  if (change_id || stage_ref || custom || pipeline_id || stage || status) {
     return ({
       change_id,
 
@@ -133,6 +148,7 @@ const constructBody = ( change_id,
       custom : custom ? custom : null,
       pipeline_id,
       stage,
+      stage_ref,
       status,
       team_id
     });
@@ -207,4 +223,3 @@ const allPathsMatch = (github, conditions) => {
   return conditions.every((arg) => isMatch(github, arg));
 }
 module.exports.allPathsMatch = allPathsMatch;
-

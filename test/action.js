@@ -7,10 +7,18 @@ const getBodyFromGitHubContext = require("../action.js").getBodyFromGitHubContex
 const isMatch = require("../action.js").isMatch;
 const allPathsMatch = require("../action.js").allPathsMatch;
 const findEvent = require("../action.js").findEvent;
+const snakeToTitleCase = require("../action.js").snakeToTitleCase;
 
 const printTestSuccess = (fnName) => {
   console.log("[ \u001b[32mOK\u001b[0m ]", fnName);
 }
+
+const test_snakeToTitleCase = (function test_snakeToTitleCase() {
+  const actual = snakeToTitleCase("pull_request");
+  const expected = "PullRequest";
+  assert.equal(actual, expected);
+  printTestSuccess(arguments.callee.name);
+})();
 
 const test_findEvent3 = (function test_findEvent3() {
   const github_context = {
@@ -225,8 +233,9 @@ const test_getBodyFromGitHubContext_weird_context = (function test_getBodyFromGi
   };
   const actual = getBodyFromGitHubContext("team-id-123", github_context);
   const expected = {
-    stage: undefined,
-    status: undefined,
+    stage: '',
+    status: '',
+    stage_ref: '',
     change_id: '',
     team_id: 'team-id-123',
     custom: { weird: { xyz: 'abc' } }
@@ -257,9 +266,10 @@ const test_getBodyFromGitHubContext_passthrough = (function test_getBodyFromGitH
   };
   const actual = getBodyFromGitHubContext("team-id-123", github_context);
   const expected = {
-    stage: "arbitrary_event",
-    status: "unknown_action",
+    stage: "ArbitraryEvent",
+    status: "UnknownAction",
     change_id: "arbitary-branch",
+    stage_ref: "arbitary-branch",
     team_id: "team-id-123",
     custom: {
       context: {
@@ -303,6 +313,7 @@ const test_getBodyFromGitHubContext_pr_closed = (function test_getBodyFromGitHub
     stage: "Change",
     status: "Succeeded",
     change_id: "branch1",
+    stage_ref: "branch1",
     team_id: "team-id-123",
     custom: {
       context: {
@@ -342,10 +353,11 @@ const test_constructBody_pr_closed = (function test_constructBody_pr_closed() {
   };
   const actual = constructBody(
     "",
-    "",
+    null,
     github_pull_request_closed,
     "",
     null,
+    "",
     undefined,
     "team-id-test1"
   );
@@ -353,6 +365,7 @@ const test_constructBody_pr_closed = (function test_constructBody_pr_closed() {
     stage: "Change",
     status: "Succeeded",
     change_id: "branch1",
+    stage_ref: "branch1",
     team_id: "team-id-test1",
     custom: {
       context: {
@@ -402,12 +415,14 @@ const test_constructBody_pr_opened = (function test_constructBody_pr_opened() {
     undefined,
     "",
     "",
+    "",
     "team-id-test1"
   );
   const expected = {
     stage: "Change",
     status: "Initiated",
     change_id: "branch1",
+    stage_ref: "branch1",
     team_id: "team-id-test1",
     custom: {
       context: {
@@ -457,6 +472,7 @@ const test_constructBody_user_action = (function test_constructBody_user_action(
     github_pull_request_opened,
     "pipeline-id-hijk",
     "test-stage-A",
+    "test-stage-ref-A",
     "test-status-B",
     "team-id-123"
   );
@@ -465,6 +481,7 @@ const test_constructBody_user_action = (function test_constructBody_user_action(
     custom: '{"s":[1,2,3],"g":4}',
     pipeline_id: "pipeline-id-hijk",
     stage: "test-stage-A",
+    stage_ref: "test-stage-ref-A",
     status: "test-status-B",
     team_id: "team-id-123",
   };
@@ -498,6 +515,7 @@ const test_constructBody_null_custom = (function test_constructBody_user_action(
     github_pull_request_opened,
     "pipeline-id-hijk",
     "test-stage-A",
+    "test-stage-ref-A",
     "test-status-B",
     "team-id-123"
   );
@@ -506,6 +524,7 @@ const test_constructBody_null_custom = (function test_constructBody_user_action(
     custom: null,
     pipeline_id: "pipeline-id-hijk",
     stage: "test-stage-A",
+    stage_ref: "test-stage-ref-A",
     status: "test-status-B",
     team_id: "team-id-123",
   };

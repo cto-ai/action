@@ -244,6 +244,31 @@ const test_getBodyFromGitHubContext_weird_context = (function test_getBodyFromGi
   printTestSuccess(arguments.callee.name);
 })();
 
+// realistic github context
+const test_getBodyFromGitHubContext_passthrough2 = (function test_getBodyFromGitHubContext_passthrough2() {
+  const github_context = {
+    context: {
+      eventName: "push",
+      ref: "refs/heads/master"
+    },
+  };
+  const actual = getBodyFromGitHubContext("team-id-123", github_context);
+  const expected = {
+    stage: "Push",
+    status: '',
+    change_id: "master",
+    stage_ref: "master",
+    team_id: "team-id-123",
+    custom: {
+      context : {
+        eventName: "push",
+        ref: "refs/heads/master"
+      }
+    }
+  };
+  assert.deepStrictEqual(actual, expected);
+  printTestSuccess(arguments.callee.name);
+})();
 
 // passthru
 const test_getBodyFromGitHubContext_passthrough = (function test_getBodyFromGitHubContext_passthrough() {
@@ -471,18 +496,18 @@ const test_constructBody_user_action = (function test_constructBody_user_action(
     '{"s":[1,2,3],"g":4}',
     github_pull_request_opened,
     "pipeline-id-hijk",
-    "test-stage-A",
+    "StageA",
     "test-stage-ref-A",
-    "test-status-B",
+    "StatusB",
     "team-id-123"
   );
   expected = {
     change_id: "change-id-abc123",
     custom: '{"s":[1,2,3],"g":4}',
     pipeline_id: "pipeline-id-hijk",
-    stage: "test-stage-A",
+    stage: "StageA",
     stage_ref: "test-stage-ref-A",
-    status: "test-status-B",
+    status: "StatusB",
     team_id: "team-id-123",
   };
   assert.deepStrictEqual(actual, expected);
@@ -514,18 +539,18 @@ const test_constructBody_null_custom = (function test_constructBody_user_action(
     '',
     github_pull_request_opened,
     "pipeline-id-hijk",
-    "test-stage-A",
+    "StageC",
     "test-stage-ref-A",
-    "test-status-B",
+    "StatusD",
     "team-id-123"
   );
   expected = {
     change_id: "change-id-abc123",
     custom: null,
     pipeline_id: "pipeline-id-hijk",
-    stage: "test-stage-A",
+    stage: "StageC",
     stage_ref: "test-stage-ref-A",
-    status: "test-status-B",
+    status: "StatusD",
     team_id: "team-id-123",
   };
   assert.deepStrictEqual(actual, expected);

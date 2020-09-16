@@ -59,7 +59,7 @@ try {
       team_id : "team-id-123",
       token : CTOAI_EVENTS_API_TOKEN,
       change_id : "change-id-abc123",
-      change_id : "stage-ref-id-hjkl",
+      stage_ref : "stage-ref-id-hjkl",
       custom : "{\"s\":[1,2,3],\"g\":4}",
       pipeline_id : "pipeline-id-hijk",
       stage : "test-stage-A",
@@ -86,7 +86,7 @@ try {
     team_id,
     // Optional params
     change_id,
-    stage-ref,
+    stage_ref,
     custom,
     pipeline_id,
     stage,

@@ -90,10 +90,14 @@ const getBodyFromGitHubContext = (team_id, github) => {
     }
   };
 
+  console.log('First')
+
   // If the fn does not return here, then we don't have a hard match but will
   // do a best-effort to fill in values.
   const found_body = get(event_bodies, findEvent(github, event_defs));
   if (found_body) return found_body;
+
+  console.log('Second')
 
   // Best effort to find something that can be used as change_id (last is
   // highest priority).
@@ -111,10 +115,10 @@ const getBodyFromGitHubContext = (team_id, github) => {
   // Best effort construct the HTTP request body
   return ({
     stage: snakeToTitleCase(get(github, ["context","eventName"])),
-    status: snakeToTitleCase(get(github, ["context","payload","action"])),
+    status: snakeToTitleCase(get(github, ["context","payload","action"])) || 'Success',
     change_id: change_id,
     stage_ref: stage_ref,
-    pipeline_id: pipline_id.replace('refs/heads/',''),
+    pipeline_id: pipeline_id.replace('refs/heads/',''),
     team_id,
     custom: github
   });

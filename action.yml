@@ -7,23 +7,8 @@ inputs:
   team_id:
     description: 'Team ID'
     required: true
-  stage:
-    description: 'Stage'
-    required: false
-  status:
-    description: 'Status'
-    required: false
-  stage_ref:
-    description: 'Stage Reference'
-    required: false
-  change_id:
-    description: 'Change ID'
-    required: false
-  pipeline_id:
-    description: 'Pipeline ID'
-    required: false
-  custom:
-    description: 'Custom Payload'
+  url:
+    description: 'Override Default Events API URL'
     required: false
 runs:
   using: 'node12'

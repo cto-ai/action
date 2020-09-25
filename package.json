@@ -9,11 +9,14 @@
   "dependencies": {
     "@actions/core": "^1.2.4",
     "@actions/github": "^4.0.0",
+    "@vercel/ncc": "^0.24.1",
+    "debug": "^4.2.0",
     "lodash.camelcase": "^4.3.0",
     "lodash.clonedeep": "^4.5.0",
     "lodash.get": "^4.4.2",
     "lodash.has": "^4.5.2",
     "lodash.startcase": "^4.4.0",
+    "ncc": "^0.3.6",
     "node-fetch": "^2.6.0"
   },
   "scripts": {

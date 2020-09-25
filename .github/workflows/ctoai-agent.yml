@@ -42,9 +42,15 @@ jobs:
     name: Record CTOai Delivery Metrics
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        path: "."
     - name: 'CTO.ai Delivery Metrics Agent Invocation'
-      uses: cto-ai/action@v1-beta
+      uses: ./
       id: ctoai-agent
       with:
         team_id: ${{ secrets.CTOAI_TEAM_ID }}
         token: ${{ secrets.CTOAI_EVENTS_API_TOKEN }}
+        debug: ${{ secrets.DEBUG }}
+        # url : https://api.cto.sh/api/v1/events

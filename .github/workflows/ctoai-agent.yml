@@ -52,5 +52,4 @@ jobs:
       with:
         team_id: ${{ secrets.CTOAI_TEAM_ID }}
         token: ${{ secrets.CTOAI_EVENTS_API_TOKEN }}
-        debug: ${{ secrets.DEBUG }}
         # url : https://api.cto.sh/api/v1/events

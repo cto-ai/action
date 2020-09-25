@@ -42,14 +42,20 @@ jobs:
     name: Record CTOai Delivery Metrics
     runs-on: ubuntu-latest
     steps:
+    # This step is specific to our development in this repo as
+    # This checkout step let's us run events from the local action code
+    # You would not use this step as the action.yml is remote for you
+    # See our other repos for a better example of how this is configured
     - name: Checkout
       uses: actions/checkout@v2
       with:
         path: "."
     - name: 'CTO.ai Delivery Metrics Agent Invocation'
-      uses: ./
+      uses: ./ # You should use the cto-ai/action@version syntax here
       id: ctoai-agent
       with:
         team_id: ${{ secrets.CTOAI_TEAM_ID }}
         token: ${{ secrets.CTOAI_EVENTS_API_TOKEN }}
+        # Change url if you want act to send to your local API during development
+        # This will be set to our production API by default if you don't set it
         # url : https://api.cto.sh/api/v1/events

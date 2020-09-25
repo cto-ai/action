@@ -73,7 +73,8 @@ const getBodyFromGitHubContext = (team_id, github) => {
     "Change Initiated" : {
       stage: "Change",
       status: "Initiated",
-      change_id: get(github, ["context","payload","pull_request","head","ref"]),
+      change_id: get(github, ["context","sha"]),
+      pipeline_id: get(github, ["context","payload","pull_request","head","ref"]),
       stage_ref: get(github, ["context","payload","pull_request","head","ref"]),
       team_id,
       custom: github
@@ -81,7 +82,8 @@ const getBodyFromGitHubContext = (team_id, github) => {
     "Change Succeeded" : {
       stage: "Change",
       status: "Succeeded",
-      change_id: get(github, ["context","payload","pull_request","head","ref"]),
+      change_id: get(github, ["context","sha"]),
+      pipeline_id: get(github, ["context","payload","pull_request","head","ref"]),
       stage_ref: get(github, ["context","payload","pull_request","head","ref"]),
       team_id,
       custom: github
@@ -95,22 +97,24 @@ const getBodyFromGitHubContext = (team_id, github) => {
 
   // Best effort to find something that can be used as change_id (last is
   // highest priority).
-  let change_id = "";
+  let pipeline_id = "";
   if (has(github, ["context","ref"])) {
-    change_id = github.context.ref;
+    pipeline_id = github.context.ref;
     console.log("\n--- tmp debug log -------------------------------------------------------------------\n\n",JSON.stringify(github),"\n");
   }
   if (has(github, ["context","payload","pull_request","head","ref"]))
-    change_id = github.context.payload.pull_request.head.ref;
+    pipeline_id = github.context.payload.pull_request.head.ref;
 
-  const stage_ref = change_id;
+  const change_id = pipeline_id;
+  const stage_ref = pipeline_id;
 
   // Best effort construct the HTTP request body
   return ({
     stage: snakeToTitleCase(get(github, ["context","eventName"])),
     status: snakeToTitleCase(get(github, ["context","payload","action"])),
-    change_id:change_id.replace('refs/heads/',''),
-    stage_ref:stage_ref.replace('refs/heads/',''),
+    change_id: change_id,
+    stage_ref: stage_ref,
+    pipeline_id: pipline_id.replace('refs/heads/',''),
     team_id,
     custom: github
   });

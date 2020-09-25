@@ -48,16 +48,21 @@ try {
   core.setFailed(err.message);
 }
 
-function mapEventsByRepo(github) {
+function mapEventsByFeature(github) {
 
-  // console.log('API URL:', CTOAI_EVENTS_API_URL)
-  // console.log('team_id', CTOAI_EVENTS_TEAM_ID);
-  // console.log('pipeline_id:', process.env.GITHUB_REPOSITORY)
-  // console.log('stage:', snakeToTitleCase(get(github, ['context', 'eventName'])))
-  // console.log('status:', snakeToTitleCase(get(github, ['context', 'payload', 'action'])) || 'Success')
-  // console.log('change_id:', github.context.sha)
-  // console.log('stage_ref:', process.env.GITHUB_REF.replace('refs/heads/',''))
-  // console.log(process.env);
+  return {
+    'team_id': `${CTOAI_EVENTS_TEAM_ID}`,
+    'pipeline_id': `${process.env.GITHUB_REPOSITORY}`,
+    'stage': `${snakeToTitleCase(get(github, ['context', 'eventName']))}`,
+    'status': `${snakeToTitleCase(get(github, ['context', 'payload', 'action'])) || 'Succeeded'}`,
+    'change_id': `${github.context.sha}`,
+    'stage_ref': `${process.env.GITHUB_REF.replace('refs/heads/','')}`,
+    'custom': github
+  }
+
+}
+
+function mapEventsByRepo(github) {
 
   return {
     'team_id': `${CTOAI_EVENTS_TEAM_ID}`,
@@ -108,8 +113,6 @@ function isMatchedEvent (github) {
       }
     ];
 
-  // Defines the HTTP request body to be used by the event with the matching
-  // name.
   const event_bodies = {
     "Change Initiated" : {
       'stage': `Change`,

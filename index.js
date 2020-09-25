@@ -23,9 +23,6 @@ const CTOAI_EVENTS_TEAM_ID = core.getInput('team_id');
 
 try {
 
-  console.log(isMatchedEvent(github))
-  process.exit();
-
   let body = mapEventsByRepo(github)
 
   sendEvent(body)
@@ -34,6 +31,17 @@ try {
     .catch((err) => {
       core.setFailed(err)
     })
+
+  var matched = isMatchedEvent(github);
+
+  if (matched) {
+     sendEvent(matched)
+      .then(res => res.json())
+      .then(output => console.log('API Response:', output))
+      .catch((err) => {
+        core.setFailed(err)
+      })
+  }
 
 } catch (err) {
   // signals a failure that GitHub Actions will use to fail the workflow step.
@@ -104,26 +112,24 @@ function isMatchedEvent (github) {
   // name.
   const event_bodies = {
     "Change Initiated" : {
-      stage: "Change",
-      status: "Initiated",
-      change_id: get(github, ["context","sha"]),
-      pipeline_id: get(github, ["context","payload","pull_request","head","ref"]),
-      stage_ref: get(github, ["context","payload","pull_request","head","ref"]),
-      team_id: CTOAI_EVENTS_TEAM_ID,
-      custom: github
+      'stage': `Change`,
+      'status': `Initiated`,
+      'team_id': `${CTOAI_EVENTS_TEAM_ID}`,
+      'pipeline_id': `${process.env.GITHUB_REPOSITORY}`,
+      'change_id': `${github.context.sha}`,
+      'stage_ref': `${process.env.GITHUB_REF.replace('refs/heads/','')}`,
+      'custom': github
     },
     "Change Succeeded" : {
-      stage: "Change",
-      status: "Succeeded",
-      change_id: get(github, ["context","sha"]),
-      pipeline_id: get(github, ["context","payload","pull_request","head","ref"]),
-      stage_ref: get(github, ["context","payload","pull_request","head","ref"]),
-      team_id: CTOAI_EVENTS_TEAM_ID,
-      custom: github
+      'stage': `Change`,
+      'status': `Succeeded`,
+      'team_id': `${CTOAI_EVENTS_TEAM_ID}`,
+      'pipeline_id': `${process.env.GITHUB_REPOSITORY}`,
+      'change_id': `${github.context.sha}`,
+      'stage_ref': `${process.env.GITHUB_REF.replace('refs/heads/','')}`,
+      'custom': github
     }
   };
-
-  console.log('findEvents', github, event_defs);
 
   var found_body = get(event_bodies, findEvent(github, event_defs));
   if (found_body) return found_body;

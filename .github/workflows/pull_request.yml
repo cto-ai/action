@@ -1,0 +1,44 @@
+#
+# This agent will automatically record (some) CTO.ai Delivery & LifeCycle
+# Metrics for use with the CTO.ai Delivery Metrics dashboard.
+#
+# Installation:
+#
+#   1. GitHub -> Settings -> Secrets -> New Secret
+#     - Create CTOAI_TEAM_ID secret using your CTO.ai-issued Team Id.
+#     - Create CTOAI_EVENTS_API_TOKEN secret using your CTO.ai-issued API Token.
+#   2. Drop this file into your GitHub repository at your-repo/.github/workflows/
+#
+
+on:
+  pull_request: 
+    types: [closed]
+
+jobs:
+  metrics:
+    name: CTO.ai Workflow Agent
+    runs-on: ubuntu-latest
+    steps:
+    # This step is specific to our development in this repo as
+    # This checkout step let's us run events from the local action code
+    # You would not use this step as the action.yml is remote for you
+    # See our other repos for a better example of how this is configured
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        path: "."
+    - name: 'CTO.ai Workflow Agent Invocation'
+      uses: ./ # You should use the cto-ai/action@version syntax here
+      id: ctoai-agent
+      env:
+        CTOAI_ACTION_ENVIRONMENT: ${{ secrets.CTOAI_ACTION_ENVIRONMENT }}
+        CTOAI_EVENTS_API_TOKEN: ${{ secrets.CTOAI_EVENTS_API_TOKEN }}
+        CTOAI_TEAM_ID: ${{ secrets.CTOAI_TEAM_ID }}
+      with:
+        event_name: 'deployment'
+        event_action: 'failed'
+        repo: 'cto-ai/action'
+        environment: 'production'
+        branch: 'main'
+        commit: 'cfb11968bb0afe4cad144133996d0da84697cd08'
+        image: '6327219d0db0'

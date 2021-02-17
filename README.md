@@ -1,67 +1,67 @@
 # CTO.ai GitHub Action
 
-The CTO.ai GitHub Action makes it easy to integrate GitHub into the CTO.ai
-Delivery Metrics platform.
+The CTO.ai GitHub Action makes it easy to extend CTO.ai Delivery Insight 
+with specific events from your Github Action, such as deployments.
 
-## CTO.ai Drop-In GitHub Action Agent
 
-The CTO.ai Drop-In GitHub Agent will automatically record some CTO.ai Delivery
-& LifeCycle Metrics that can then be viewed on the CTO.ai Delivery Metrics
-dashboard.
-
-### Install Agent
+### Install Default Agent
 
 1. From your GitHub repo, click Settings -> Secrets -> New Secret
   - Create CTOAI_TEAM_ID secret using your CTO.ai-issued Team Id.
   - Create CTOAI_EVENTS_API_TOKEN secret using your CTO.ai-issued API Token.
-2. Access the CTO.ai Agent workflow from:
-  - https://github.com/cto-ai/agent/blob/master/.github/workflows/ctoai-agent.yml
-3. Place `ctoai-agent.yml` in the workflows folder of your repo:
-  - .github/workflows/ctoai-agent.yml
-4. You're done! Delivery & LifeCycle Metrics can now be viewed on the Metrics
-   Dashboard.
+2. Copy all of the CTO.ai Agent workflow from:
+  - https://github.com/cto-ai/agent/blob/master/.github/workflows/
+3. Place these workflows in the workflows folder of your repo:
+  - .github/workflows/ or integrate directly with your existing actions.
+4. You're done! Now events from your workflow will be sent!
+
+By default our existing agents assume you use Github Flow. By default we count 
+commits to master as a "successful deployment" and pull requests with status closed 
+as a "failed deployment". However, if you want to get more accurate with measuring your
+actual deployments you should manually instrument your pipeline at this custom stage.
 
 ## Manually Instrument Pipelines using the CTO.ai Action
 
-In addition to the drop-in Agent, you can manually instrument your GitHub
-action workflows with specific LifeCycle events that you specify. For example,
-if you have a GitHub workflow that deploys your application to Azure, you could
-add steps to this workflow that use the CTO.ai Action (cto-ai/action) to store
-metrics. The CTO.ai Action will store the event information that you specify,
-and those metrics can then be visible on the CTO.ai Delivery Metrics Dashboard.
+When instrumenting a custom deployment pipeline, you'll need to isolate the code that you 
+have created for your deployments and add steps for our action to send us the correct info.
 
-The CTO.ai steps that you can add to your workflows look like this:
+The CTO.ai steps that you should add to your workflows look like this:
 
 ```
 - name: Report Build Succeeded
   if: ${{ success() }}
   uses: cto-ai/action@v1-beta
   id: ctoai-build-succeeded
+  env:
+    CTOAI_ACTION_ENVIRONMENT: ${{ secrets.CTOAI_ACTION_ENVIRONMENT }}
+    CTOAI_EVENTS_API_TOKEN: ${{ secrets.CTOAI_EVENTS_API_TOKEN }}
+    CTOAI_TEAM_ID: ${{ secrets.CTOAI_TEAM_ID }}
   with:
-    team_id: ${{ secrets.CTOAI_TEAM_ID }}
-    token: ${{ secrets.CTOAI_EVENTS_API_TOKEN }}
-    stage: "Build"
-    status: "Succeeded"
-    change-id: "your-change-id1"
-    pipeline-id: "your-pipeline-id1"
+    event_name: 'deployment'
+    event_action: 'succeeded'
+    repo: 'org/repo'
+    environment: 'production'
+    branch: 'main'
+    commit: 'cfb11968bb0afe4cad144133996d0da84697cd08'
+    image: '6327219d0db0'
 - name: Report Build Failed
   if: ${{ failure() }}
   uses: cto-ai/action@v1-beta
   id: ctoai-build-failed
+  env:
+    CTOAI_ACTION_ENVIRONMENT: ${{ secrets.CTOAI_ACTION_ENVIRONMENT }}
+    CTOAI_EVENTS_API_TOKEN: ${{ secrets.CTOAI_EVENTS_API_TOKEN }}
+    CTOAI_TEAM_ID: ${{ secrets.CTOAI_TEAM_ID }}
   with:
-    team_id: ${{ secrets.CTOAI_TEAM_ID }}
-    token: ${{ secrets.CTOAI_EVENTS_API_TOKEN }}
-    stage: "Build"
-    status: "Failed"
-    change-id: "your-change-id1"
-    pipeline-id: "your-pipeline-id1"
+    event_name: 'deployment'
+    event_action: 'failed'
+    repo: 'org/repo'
+    environment: 'production'
+    branch: 'main'
+    commit: 'cfb11968bb0afe4cad144133996d0da84697cd08'
+    image: '6327219d0db0'
 ```
 
-See a live example of this instrumentation in the [deployment-action-example](https://github.com/cto-ai/deployment-action-example)
-repo, which instruments an Azure deployment pipeline.
+## Support
 
-The CTO.ai GitHub Action accepts the same parameters as the regular CTO.ai
-Delivery Metrics APIs, which are explained in greater detail at the
-[CTO.ai Official Documentation](cto.ai/docs/delivery-metrics).
-
-
+Please ping us in our Slack Community if you have any questions!

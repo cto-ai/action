@@ -55,7 +55,7 @@ const getBodyFromGitHubContext = (team_id, github) => {
       conditions: [
         [ ["context","eventName"], "pull_request" ],
         [ ["context","payload","pull_request","base","ref"], "master" ],
-        [ ["context","payload","action"], "merged" ]
+        [ ["context","payload","action"], "opened" ]
       ]
     },
     { event:"deployment failed",
@@ -85,12 +85,15 @@ const getBodyFromGitHubContext = (team_id, github) => {
       meta: github
     },
     "deployment failed" : {
-      stage: "deployment",
-      status: "failed",
-      change_id: get(github, ["context","payload","pull_request","head","ref"]),
-      stage_ref: get(github, ["context","payload","pull_request","head","ref"]),
       team_id,
-      custom: github
+      event_name: "deployment",
+      event_action: "succeeded",
+      repo: '',
+      environment: '',
+      branch: '',
+      commit: '',
+      image: '',
+      meta: github
     }
   };
 
@@ -113,12 +116,15 @@ const getBodyFromGitHubContext = (team_id, github) => {
 
   // Best effort construct the HTTP request body
   return ({
-    stage: snakeToTitleCase(get(github, ["context","eventName"])),
-    status: snakeToTitleCase(get(github, ["context","payload","action"])),
-    change_id:change_id.replace('refs/heads/',''),
-    stage_ref:stage_ref.replace('refs/heads/',''),
     team_id,
-    custom: github
+    event_name: "deployment",
+    event_action: "succeeded",
+    repo: '',
+    environment: '',
+    branch: '',
+    commit: '',
+    image: '',
+    meta: github
   });
 };
 module.exports.getBodyFromGitHubContext = getBodyFromGitHubContext;
@@ -147,7 +153,8 @@ const constructBody = ( github,
   // The presence of any of these values below implies the user wants to specify
   // all of them. In which case, we won't use the GitHub Context object to
   // populate the event API body (we just return all existing values instead).
-  //
+
+  // skip the automated payload creation stuff for now - it complicates things
   if (true || event_name || event_action || repo || environment || branch || commit || image) {
     return ({
       team_id,

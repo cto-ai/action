@@ -23,6 +23,8 @@
     "build": "ncc build index.js",
     "dev": "export CTOAI_ACTION_ENVIRONMENT=dev; node index.js",
     "prd": "export CTOAI_ACTION_ENVIRONMENT=prd; node index.js",
-    "test": "node test/*.js"
+    "test": "node test/*.js",
+    "pull_request": "npm run build && ./act -s CTOAI_EVENTS_API_TOKEN=$CTOAI_EVENTS_API_TOKEN -s CTOAI_TEAM_ID=$CTOAI_TEAM_ID -s CTOAI_ACTION_ENVIRONMENT=$CTOAI_ACTION_ENVIRONMENT pull_request --eventpath=./events/pull_request.json",
+    "push": "npm run build && ./act -s CTOAI_EVENTS_API_TOKEN=$CTOAI_EVENTS_API_TOKEN -s CTOAI_TEAM_ID=$CTOAI_TEAM_ID -s CTOAI_ACTION_ENVIRONMENT=$CTOAI_ACTION_ENVIRONMENT pull_request --eventpath=./events/push.json"
   }
 }

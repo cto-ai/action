@@ -8,19 +8,19 @@ const got = require('got');
  * Helper function to extract branch if not specified.
  * @param {String} eventName - name of the event triggering the Github Action
  * @param {Object} payload - context payload containing the data of the event
- * @returns {(String|null)} found branch or null
+ * @returns {(String|null)} found branch with stripped /refs/heads or null
  */
 const getBranch = (eventName, payload) => {
   if (eventName === 'push') {
-    return payload.ref;
+    return payload.ref.replace('refs/heads/', '');
   } else if (eventName === 'pull_request') {
-    return payload.pull_request.base.ref;
+    return payload.pull_request.base.ref.replace('refs/heads/', '');
   } else if (eventName === 'deployment') {
-    return payload.deployment.ref;
+    return payload.deployment.ref.replace('refs/heads/', '');
   } else if (eventName === 'deployment_status') {
-    return payload.deployment.ref;
+    return payload.deployment.ref.replace('refs/heads/', '');
   } else if (eventName === 'status') {
-    return payload.branches ? payload.branches[0] : null;
+    return payload.branches ? payload.branches[0].replace('refs/heads/', '') : null;
   }
   return null;
 }
@@ -52,15 +52,17 @@ const getSha = (eventName, payload) => {
 
 /**
  * Main entrypoint for action that collects up data and sends to insights api.
+ * @param {(Object|null)} context - optional param used for injecting in tests that matches github.context format.
+ * @returns {Promise} sent request data payload to events api
  */
-const run = async () => {
-  const { eventName, payload } = github.context;
+const run = async (context) => {
+  const eventName = context != null ? context.eventName : github.context.eventNaem
+  const payload = context != null ? context.payload : github.context.payload
   const token = core.getInput('token');
   const team_id = core.getInput('team_id');
   core.setSecret(token)
   core.setSecret(team_id)
   const body = {
-    token,
     team_id,
     event_name: core.getInput('event_name'),
     event_action: core.getInput('event_action'),
@@ -68,7 +70,7 @@ const run = async () => {
     image: core.getInput('image') || null,
     branch: core.getInput('branch') || getBranch(eventName, payload),
     commit: core.getInput('commit') || getSha(eventName, payload),
-    repo: payload.respository.full_name
+    repo: payload.repository.full_name
   };
   return got.post('https://events.cto.ai/', {
     headers: { 

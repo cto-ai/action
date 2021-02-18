@@ -1,4 +1,4 @@
-name: 'Ops Platform Extended Insights'
+name: 'CTO.ai Github Action'
 description: 'This action extends the Ops Platform Github App to allow users to send in additional events and details of their workflow'
 inputs:
   token:
@@ -23,7 +23,7 @@ inputs:
     description: 'Overwrite branch specified by github in data payload (If not present, action will try to use ref value if available to event type)'
     required: false
   commit:
-    description: 'Commit id to uniquely reference the event (If not present, action will try to use SHA value if available to event type)'
+    description: 'Branch used to reference where change is taking place (If not present, action will try to use ref value if available to event type)'
     required: false
 runs:
   using: 'node12'

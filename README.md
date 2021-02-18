@@ -1,14 +1,14 @@
 # CTO.ai GitHub Action
 
-This Github Action allows you to extend the insights data received by the Ops Platform Github App. You can add data to you workflows for deployment tools that are not configured with Github's deployment API.
+This Github Action allows you to extend the insights data received by CTO.ai Github App. You can add data to you workflows for deployment tools that are not configured with Github's deployment API.
 
 ## Inputs
 
 ### `token`
-**Required** Ops Platform api token, follow [these docs to generate](https://cto.ai/docs/integrate-any-tool)
+**Required** CTO.ai api token, follow [these docs to generate](https://cto.ai/docs/integrate-any-tool)
 
 ### `team_id`
-**Required** Ops Platform team ID sending the data, follow [these docs to access](https://cto.ai/docs/integrate-any-tool)
+**Required** CTO.ai team ID sending the data, follow [these docs to access](https://cto.ai/docs/integrate-any-tool)
 
 ### `event_name`
 **Required** Name of event being sent i.e. "deployment"

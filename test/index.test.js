@@ -2,7 +2,7 @@
 
 const { test } = require('tap');
 const nock = require('nock');
-const { run } = require('../src/index.js');
+const { run } = require('../src/run');
 
 const TOKEN = 'jifeo2903u089jf3920';
 const TEAM_ID = 'i992-j9f23j09-j092j0';
@@ -34,13 +34,14 @@ test('Push event with only required fields has additional data added', async ({ 
 
   const req = nock('https://events.cto.ai')
     .post('/', {
+      team_id: TEAM_ID,
       event_name: 'deployment',
       event_action: 'succeeded',
-      commit: '12345',
-      branch: 'main',
-      repo: 'org/test',
       environment: null,
-      image: null
+      image: null,
+      branch: 'main',
+      commit: '12345',
+      repo: 'org/test'
     })
     .reply(200, { message: 'event written', data: {} });
 

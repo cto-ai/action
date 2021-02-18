@@ -67,10 +67,14 @@ const run = async () => {
     environment: core.getInput('environment') || null,
     image: core.getInput('image') || null,
     branch: core.getInput('branch') || getBranch(eventName, payload),
-    commit: core.getInput('commit') || getSha(eventName, payload)
+    commit: core.getInput('commit') || getSha(eventName, payload),
+    repo: payload.respository.full_name
   };
-  return got.post(process.env.INSIGHTS_API_URL, {
-    headers: { Authorization: `Bearer ${token}` },
+  return got.post('https://events.cto.ai/', {
+    headers: { 
+      Authorization: `Bearer ${token}`,
+      'x-ops-mechanism': 'github-action'
+    },
     json: body
   });
 }

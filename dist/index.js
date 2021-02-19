@@ -13472,6 +13472,7 @@ const run = async (context) => {
     commit: core.getInput('commit') || getSha(eventName, payload),
     repo: payload.repository.full_name
   };
+  console.log('body', body);
   return got.post('https://events.cto.ai/', {
     headers: { 
       Authorization: `Bearer ${token}`,

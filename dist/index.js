@@ -13383,6 +13383,7 @@ const { run } = __nccwpck_require__(2490);
 (async () => {
   try {
     await run()
+    console.log('Successfully sent event data!')
   } catch (err) {
     core.setFailed(`Ops Platform Action failed with error: ${err}`)
   }
@@ -13456,8 +13457,6 @@ const getSha = (eventName, payload) => {
 const run = async (context) => {
   const eventName = context != null ? context.eventName : github.context.eventName
   const payload = context != null ? context.payload : github.context.payload
-  console.log(eventName)
-  console.log(payload)
   const token = core.getInput('token');
   const team_id = core.getInput('team_id');
   core.setSecret(token)
@@ -13472,7 +13471,6 @@ const run = async (context) => {
     commit: core.getInput('commit') || getSha(eventName, payload),
     repo: payload.repository.full_name
   };
-  console.log('body', body);
   return got.post('https://events.cto.ai/', {
     headers: { 
       Authorization: `Bearer ${token}`,

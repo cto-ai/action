@@ -4,30 +4,30 @@ This Github Action allows you to extend the insights data received by CTO.ai Git
 
 ## Required Inputs
 
-### token
-**Required** CTO.ai api token, follow [these docs to generate](https://cto.ai/docs/integrate-any-tool)
+### `token`
+CTO.ai api token, follow [these docs to generate](https://cto.ai/docs/integrate-any-tool)
 
-### team_id
-**Required** CTO.ai team ID sending the data, follow [these docs to access](https://cto.ai/docs/integrate-any-tool)
+### `team_id`
+CTO.ai team ID sending the data, follow [these docs to access](https://cto.ai/docs/integrate-any-tool)
 
-### event_name
-**Required** Name of event being sent i.e. "deployment"
+### `event_name`
+Name of event being sent i.e. "deployment"
 
-### event_action
-**Required** Action associated with event i.e. "failed", "pending", or "succeeded"
+### `event_action`
+Action associated with event i.e. "failed", "pending", or "succeeded"
 
 ## Optional Inputs
 
-### environment
+### `environment`
 Environment that workflow is running in.
 
-### image
+### `image`
 Built image id if available
 
-### branch
+### `branch`
 Branch used to reference where change is taking place (If not present, action will try to use ref value if available to event type)
 
-### commit
+### `commit`
 Commit id to uniquely reference the event (If not present, action will try to use SHA value if available to event type)
 
 ## Recommendations

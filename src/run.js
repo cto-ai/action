@@ -58,6 +58,8 @@ const getSha = (eventName, payload) => {
 const run = async (context) => {
   const eventName = context != null ? context.eventName : github.context.eventNaem
   const payload = context != null ? context.payload : github.context.payload
+  console.log(eventName)
+  console.log(payload)
   const token = core.getInput('token');
   const team_id = core.getInput('team_id');
   core.setSecret(token)

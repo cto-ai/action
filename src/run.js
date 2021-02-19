@@ -56,7 +56,7 @@ const getSha = (eventName, payload) => {
  * @returns {Promise} sent request data payload to events api
  */
 const run = async (context) => {
-  const eventName = context != null ? context.eventName : github.context.eventNaem
+  const eventName = context != null ? context.eventName : github.context.eventName
   const payload = context != null ? context.payload : github.context.payload
   console.log(eventName)
   console.log(payload)

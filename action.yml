@@ -1,29 +1,29 @@
-name: 'CTO.ai GitHub Action'
-description: 'The CTO.ai GitHub Action supports CTO.ai Lifecycle & Delivery Metrics'
+name: 'CTO.ai Github Action'
+description: 'This action extends the Ops Platform Github App to allow users to send in additional events and details of their workflow'
 inputs:
   token:
     description: 'Authorization Token'
     required: true
   team_id:
-    description: 'Team ID'
+    description: 'Ops Platform team ID for team sending event.'
     required: true
-  stage:
-    description: 'Stage'
+  event_name:
+    description: 'Name of the event i.e. "deployment"'
+    required: true
+  event_action:
+    description: 'Outcome of event. Expecting one of: "succeeded", "failed", "initiated", "recovered"'
+    required: true
+  environment:
+    description: 'Environment that workflow is running in i.e. "production"'
     required: false
-  status:
-    description: 'Status'
+  image:
+    description: 'Built image ID'
     required: false
-  stage_ref:
-    description: 'Stage Reference'
+  branch:
+    description: 'Overwrite branch specified by github in data payload (If not present, action will try to use ref value if available to event type)'
     required: false
-  change_id:
-    description: 'Change ID'
-    required: false
-  pipeline_id:
-    description: 'Pipeline ID'
-    required: false
-  custom:
-    description: 'Custom Payload'
+  commit:
+    description: 'Branch used to reference where change is taking place (If not present, action will try to use ref value if available to event type)'
     required: false
 runs:
   using: 'node12'

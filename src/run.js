@@ -12,15 +12,19 @@ const got = require('got');
  */
 const getBranch = (eventName, payload) => {
   if (eventName === 'push') {
-    return payload.ref.replace('refs/heads/', '');
+    return payload.ref.replace('refs/heads/', '').replace('refs/tags/', '');
   } else if (eventName === 'pull_request') {
     return payload.pull_request.base.ref.replace('refs/heads/', '');
   } else if (eventName === 'deployment') {
     return payload.deployment.ref.replace('refs/heads/', '');
   } else if (eventName === 'deployment_status') {
     return payload.deployment.ref.replace('refs/heads/', '');
+  } else if (eventName === 'package') {
+    return payload.package.package_version.release.target_commitish;
+  } else if (eventName === 'release') {
+    return payload.release.target_commitish;
   } else if (eventName === 'status') {
-    return payload.branches ? payload.branches[0].replace('refs/heads/', '') : null;
+    return payload.branches[0].name.replace('refs/heads/', '');
   }
   return null;
 }
@@ -33,17 +37,13 @@ const getBranch = (eventName, payload) => {
  */
 const getSha = (eventName, payload) => {
   if (eventName === 'push') {
-    return payload.after;
+    return payload.before;
   } else if (eventName === 'pull_request') {
     return payload.pull_request.head.sha;
   } else if (eventName === 'deployment') {
     return payload.deployment.sha;
   } else if (eventName === 'deployment_status') {
     return payload.deployment.sha;
-  } else if (eventName === 'package') {
-    return payload.package.package_version.release.target_commitish;
-  } else if (eventName === 'release') {
-    return payload.release.target_commitish;
   } else if (eventName === 'status') {
     return payload.sha;
   }

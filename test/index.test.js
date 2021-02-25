@@ -5,14 +5,14 @@ const nock = require('nock')
 const { run } = require('../src/run')
 
 // Import fixtures
-const push_payload = require('./fixtures/push')
-const pull_request_payload = require('./fixtures/pull_request')
-const deployment_payload = require('./fixtures/deployment')
-const deployment_status_payload = require('./fixtures/deployment_status')
-const status_payload = require('./fixtures/status')
-const package_payload = require('./fixtures/package')
-const release_payload = require('./fixtures/release')
-const issue_payload = require('./fixtures/issue')
+const pushPayload = require('./fixtures/push')
+const pullRequestPayload = require('./fixtures/pull_request')
+const deploymentPayload = require('./fixtures/deployment')
+const deploymentStatusPayload = require('./fixtures/deployment_status')
+const statusPayload = require('./fixtures/status')
+const packagePayload = require('./fixtures/package')
+const releasePayload = require('./fixtures/release')
+const issuePayload = require('./fixtures/issue')
 
 // These params are used for integration testing.
 const { NOCK_ENABLED, OPS_PLATFORM_TEST_TOKEN } = process.env
@@ -36,7 +36,7 @@ test('Push event with only required fields has additional data added', async ({ 
 
   const context = {
     eventName: 'push',
-    payload: push_payload
+    payload: pushPayload
   }
 
   if (NOCK_ENABLED) {
@@ -77,7 +77,7 @@ test('Push event with all parameters passed, uses the overwriting values', async
 
   const context = {
     eventName: 'push',
-    payload: push_payload
+    payload: pushPayload
   }
 
   if (NOCK_ENABLED) {
@@ -118,7 +118,7 @@ test('Pull Request event with only required fields has additional data added', a
 
   const context = {
     eventName: 'pull_request',
-    payload: pull_request_payload
+    payload: pullRequestPayload
   }
 
   if (NOCK_ENABLED) {
@@ -159,7 +159,7 @@ test('Pull Request event with all parameters passed, uses the overwriting values
 
   const context = {
     eventName: 'push',
-    payload: pull_request_payload
+    payload: pullRequestPayload
   }
 
   if (NOCK_ENABLED) {
@@ -200,7 +200,7 @@ test('Deployment event with only required fields has additional data added', asy
 
   const context = {
     eventName: 'deployment',
-    payload: deployment_payload
+    payload: deploymentPayload
   }
 
   if (NOCK_ENABLED) {
@@ -241,7 +241,7 @@ test('Deployment event with all parameters passed, uses the overwriting values',
 
   const context = {
     eventName: 'deployment',
-    payload: deployment_payload
+    payload: deploymentPayload
   }
 
   if (NOCK_ENABLED) {
@@ -282,7 +282,7 @@ test('Deployment Status event with only required fields has additional data adde
 
   const context = {
     eventName: 'deployment_status',
-    payload: deployment_status_payload
+    payload: deploymentStatusPayload
   }
 
   if (NOCK_ENABLED) {
@@ -323,7 +323,7 @@ test('Deployment Status event with all parameters passed, uses the overwriting v
 
   const context = {
     eventName: 'deployment_status',
-    payload: deployment_status_payload
+    payload: deploymentStatusPayload
   }
 
   if (NOCK_ENABLED) {
@@ -364,7 +364,7 @@ test('Deployment Status event with only required fields has additional data adde
 
   const context = {
     eventName: 'deployment_status',
-    payload: deployment_status_payload
+    payload: deploymentStatusPayload
   }
 
   if (NOCK_ENABLED) {
@@ -405,7 +405,7 @@ test('Deployment Status event with all parameters passed, uses the overwriting v
 
   const context = {
     eventName: 'deployment_status',
-    payload: deployment_status_payload
+    payload: deploymentStatusPayload
   }
 
   if (NOCK_ENABLED) {
@@ -446,7 +446,7 @@ test('Status event with only required fields has additional data added', async (
 
   const context = {
     eventName: 'status',
-    payload: status_payload
+    payload: statusPayload
   }
 
   if (NOCK_ENABLED) {
@@ -487,7 +487,7 @@ test('Status event with all parameters passed, uses the overwriting values', asy
 
   const context = {
     eventName: 'status',
-    payload: status_payload
+    payload: statusPayload
   }
 
   if (NOCK_ENABLED) {
@@ -528,7 +528,7 @@ test('Package event with only required fields has additional data added', async 
 
   const context = {
     eventName: 'package',
-    payload: package_payload
+    payload: packagePayload
   }
 
   if (NOCK_ENABLED) {
@@ -569,7 +569,7 @@ test('Package event with all parameters passed, uses the overwriting values', as
 
   const context = {
     eventName: 'package',
-    payload: package_payload
+    payload: packagePayload
   }
 
   if (NOCK_ENABLED) {
@@ -610,7 +610,7 @@ test('Release event with only required fields has additional data added', async 
 
   const context = {
     eventName: 'release',
-    payload: release_payload
+    payload: releasePayload
   }
 
   if (NOCK_ENABLED) {
@@ -651,7 +651,7 @@ test('Release event with all parameters passed, uses the overwriting values', as
 
   const context = {
     eventName: 'release',
-    payload: release_payload
+    payload: releasePayload
   }
 
   if (NOCK_ENABLED) {
@@ -692,7 +692,7 @@ test('Event without ref or sha only gets the fields passed and repo', async ({ i
 
   const context = {
     eventName: 'issues',
-    payload: issue_payload
+    payload: issuePayload
   }
 
   if (NOCK_ENABLED) {

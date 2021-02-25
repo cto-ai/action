@@ -158,7 +158,7 @@ test('Pull Request event with all parameters passed, uses the overwriting values
   setInput('commit', '88888')
 
   const context = {
-    eventName: 'push',
+    eventName: 'pull_request',
     payload: pullRequestPayload
   }
 
@@ -242,88 +242,6 @@ test('Deployment event with all parameters passed, uses the overwriting values',
   const context = {
     eventName: 'deployment',
     payload: deploymentPayload
-  }
-
-  if (NOCK_ENABLED) {
-    nock('https://events.cto.ai')
-      .matchHeader('authorization', `Bearer ${TOKEN}`)
-      .post('/', {
-        team_id: TEAM_ID,
-        event_name: 'deployment',
-        event_action: 'succeeded',
-        environment: 'test',
-        image: 'image-1',
-        branch: 'branch-1',
-        commit: '88888',
-        repo: 'Codertocat/Hello-World'
-      })
-      .reply(200, { message: 'event written', data: {} })
-  }
-
-  const res = await run(context)
-  is(res.statusCode, 200)
-  is(JSON.parse(res.body).message, 'event written')
-
-  clearInput('token')
-  clearInput('team_id')
-  clearInput('event_name')
-  clearInput('event_action')
-  clearInput('environment')
-  clearInput('image')
-  clearInput('branch')
-  clearInput('commit')
-})
-
-test('Deployment Status event with only required fields has additional data added', async ({ is }) => {
-  setInput('token', TOKEN)
-  setInput('team_id', TEAM_ID)
-  setInput('event_name', 'deployment')
-  setInput('event_action', 'succeeded')
-
-  const context = {
-    eventName: 'deployment_status',
-    payload: deploymentStatusPayload
-  }
-
-  if (NOCK_ENABLED) {
-    nock('https://events.cto.ai')
-      .matchHeader('authorization', `Bearer ${TOKEN}`)
-      .post('/', {
-        team_id: TEAM_ID,
-        event_name: 'deployment',
-        event_action: 'succeeded',
-        environment: null,
-        image: null,
-        branch: 'master',
-        commit: 'f95f852bd8fca8fcc58a9a2d6c842781e32a215e',
-        repo: 'Codertocat/Hello-World'
-      })
-      .reply(200, { message: 'event written', data: {} })
-  }
-
-  const res = await run(context)
-  is(res.statusCode, 200)
-  is(JSON.parse(res.body).message, 'event written')
-
-  clearInput('token')
-  clearInput('team_id')
-  clearInput('event_name')
-  clearInput('event_action')
-})
-
-test('Deployment Status event with all parameters passed, uses the overwriting values', async ({ is }) => {
-  setInput('token', TOKEN)
-  setInput('team_id', TEAM_ID)
-  setInput('event_name', 'deployment')
-  setInput('event_action', 'succeeded')
-  setInput('environment', 'test')
-  setInput('image', 'image-1')
-  setInput('branch', 'branch-1')
-  setInput('commit', '88888')
-
-  const context = {
-    eventName: 'deployment_status',
-    payload: deploymentStatusPayload
   }
 
   if (NOCK_ENABLED) {

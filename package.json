@@ -8,9 +8,12 @@
   "license": "ISC",
   "devDependencies": {
     "husky": "^4.3.0",
+    "lint-staged": "^10.4.0",
     "nock": "^13.0.4",
     "node-forge": "^0.10.0",
     "node-rsa": "^1.1.1",
+    "snazzy": "^8.0.0",
+    "standard": "^14.3.4",
     "tap": "^14.10.8"
   },
   "dependencies": {
@@ -20,11 +23,26 @@
   },
   "scripts": {
     "build": "ncc build src/index.js",
-    "test": "tap -j1 -R classic"
+    "lint": "standard | snazzy",
+    "fix": "standard --fix",
+    "test": "NOCK_ENABLED=true tap -j1 -R classic",
+    "integration": "tap -j1 -R classic",
+    "validate": "npm run lint && npm run test"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run test"
+      "pre-commit": "lint-staged && npm run validate"
     }
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "npm run fix"
+    ]
+  },
+  "standard": {
+    "ignore": [
+      "src/index.js",
+      "dist/"
+    ]
   }
 }

@@ -1,3 +1,5 @@
+![Test](https://github.com/cto-ai/action/workflows/Test/badge.svg)
+
 # CTO.ai GitHub Action
 
 This Github Action allows you to extend the insights data received by CTO.ai Github App. You can add data to you workflows for deployment tools that are not configured with Github's deployment API.

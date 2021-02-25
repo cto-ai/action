@@ -1975,7 +1975,7 @@ exports.withCustomRequest = withCustomRequest;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-const VERSION = "2.9.1";
+const VERSION = "2.10.0";
 
 /**
  * Some “list” response that can be paginated have a different response structure
@@ -2558,6 +2558,25 @@ const Endpoints = {
     updateMembershipForAuthenticatedUser: ["PATCH /user/memberships/orgs/{org}"],
     updateWebhook: ["PATCH /orgs/{org}/hooks/{hook_id}"],
     updateWebhookConfigForOrg: ["PATCH /orgs/{org}/hooks/{hook_id}/config"]
+  },
+  packages: {
+    deletePackageForAuthenticatedUser: ["DELETE /user/packages/{package_type}/{package_name}"],
+    deletePackageForOrg: ["DELETE /orgs/{org}/packages/{package_type}/{package_name}"],
+    deletePackageVersionForAuthenticatedUser: ["DELETE /user/packages/{package_type}/{package_name}/versions/{package_version_id}"],
+    deletePackageVersionForOrg: ["DELETE /orgs/{org}/packages/{package_type}/{package_name}/versions/{package_version_id}"],
+    getAllPackageVersionsForAPackageOwnedByAnOrg: ["GET /orgs/{org}/packages/{package_type}/{package_name}/versions"],
+    getAllPackageVersionsForAPackageOwnedByTheAuthenticatedUser: ["GET /user/packages/{package_type}/{package_name}/versions"],
+    getAllPackageVersionsForPackageOwnedByUser: ["GET /users/{username}/packages/{package_type}/{package_name}/versions"],
+    getPackageForAuthenticatedUser: ["GET /user/packages/{package_type}/{package_name}"],
+    getPackageForOrganization: ["GET /orgs/{org}/packages/{package_type}/{package_name}"],
+    getPackageForUser: ["GET /users/{username}/packages/{package_type}/{package_name}"],
+    getPackageVersionForAuthenticatedUser: ["GET /user/packages/{package_type}/{package_name}/versions/{package_version_id}"],
+    getPackageVersionForOrganization: ["GET /orgs/{org}/packages/{package_type}/{package_name}/versions/{package_version_id}"],
+    getPackageVersionForUser: ["GET /users/{username}/packages/{package_type}/{package_name}/versions/{package_version_id}"],
+    restorePackageForAuthenticatedUser: ["POST /user/packages/{package_type}/{package_name}/restore"],
+    restorePackageForOrg: ["POST /orgs/{org}/packages/{package_type}/{package_name}/restore"],
+    restorePackageVersionForAuthenticatedUser: ["POST /user/packages/{package_type}/{package_name}/versions/{package_version_id}/restore"],
+    restorePackageVersionForOrg: ["POST /orgs/{org}/packages/{package_type}/{package_name}/versions/{package_version_id}/restore"]
   },
   projects: {
     addCollaborator: ["PUT /projects/{project_id}/collaborators/{username}", {
@@ -3160,7 +3179,7 @@ const Endpoints = {
   }
 };
 
-const VERSION = "4.11.0";
+const VERSION = "4.12.2";
 
 function endpointsToMethods(octokit, endpointsMap) {
   const newMethods = {};
@@ -5073,12 +5092,14 @@ module.exports = (fromStream, toStream) => {
 /***/ }),
 
 /***/ 6417:
-/***/ ((module, exports, __nccwpck_require__) => {
+/***/ ((module, exports) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const tls_1 = __nccwpck_require__(4016);
+function isTLSSocket(socket) {
+    return socket.encrypted;
+}
 const deferToConnect = (socket, fn) => {
     let listeners;
     if (typeof fn === 'function') {
@@ -5095,7 +5116,7 @@ const deferToConnect = (socket, fn) => {
         if (hasConnectListener) {
             listeners.connect();
         }
-        if (socket instanceof tls_1.TLSSocket && hasSecureConnectListener) {
+        if (isTLSSocket(socket) && hasSecureConnectListener) {
             if (socket.authorized) {
                 listeners.secureConnect();
             }
@@ -13382,10 +13403,10 @@ const { run } = __nccwpck_require__(2490);
 
 (async () => {
   try {
-    await run()
-    console.log('Successfully sent event data!')
+    await run();
+    console.log('Successfully sent event data!');
   } catch (err) {
-    core.setFailed(`Ops Platform Action failed with error: ${err}`)
+    core.setFailed(`Ops Platform Action failed with error: ${err}`);
   }
 })();
 
@@ -13399,9 +13420,9 @@ const { run } = __nccwpck_require__(2490);
 "use strict";
 
 
-const core = __nccwpck_require__(9898);
-const github = __nccwpck_require__(7317);
-const got = __nccwpck_require__(505);
+const core = __nccwpck_require__(9898)
+const github = __nccwpck_require__(7317)
+const got = __nccwpck_require__(505)
 
 /**
  * Helper function to extract branch if not specified.
@@ -13411,17 +13432,21 @@ const got = __nccwpck_require__(505);
  */
 const getBranch = (eventName, payload) => {
   if (eventName === 'push') {
-    return payload.ref.replace('refs/heads/', '');
+    return payload.ref.replace('refs/heads/', '').replace('refs/tags/', '')
   } else if (eventName === 'pull_request') {
-    return payload.pull_request.base.ref.replace('refs/heads/', '');
+    return payload.pull_request.base.ref.replace('refs/heads/', '')
   } else if (eventName === 'deployment') {
-    return payload.deployment.ref.replace('refs/heads/', '');
+    return payload.deployment.ref.replace('refs/heads/', '')
   } else if (eventName === 'deployment_status') {
-    return payload.deployment.ref.replace('refs/heads/', '');
+    return payload.deployment.ref.replace('refs/heads/', '')
+  } else if (eventName === 'package') {
+    return payload.package.package_version.release.target_commitish
+  } else if (eventName === 'release') {
+    return payload.release.target_commitish
   } else if (eventName === 'status') {
-    return payload.branches ? payload.branches[0].replace('refs/heads/', '') : null;
+    return payload.branches[0].name.replace('refs/heads/', '')
   }
-  return null;
+  return null
 }
 
 /**
@@ -13432,21 +13457,17 @@ const getBranch = (eventName, payload) => {
  */
 const getSha = (eventName, payload) => {
   if (eventName === 'push') {
-    return payload.after;
+    return payload.before
   } else if (eventName === 'pull_request') {
-    return payload.pull_request.head.sha;
+    return payload.pull_request.head.sha
   } else if (eventName === 'deployment') {
-    return payload.deployment.sha;
+    return payload.deployment.sha
   } else if (eventName === 'deployment_status') {
-    return payload.deployment.sha;
-  } else if (eventName === 'package') {
-    return payload.package.package_version.release.target_commitish;
-  } else if (eventName === 'release') {
-    return payload.release.target_commitish;
+    return payload.deployment.sha
   } else if (eventName === 'status') {
-    return payload.sha;
+    return payload.sha
   }
-  return null;
+  return null
 }
 
 /**
@@ -13457,12 +13478,12 @@ const getSha = (eventName, payload) => {
 const run = async (context) => {
   const eventName = context != null ? context.eventName : github.context.eventName
   const payload = context != null ? context.payload : github.context.payload
-  const token = core.getInput('token');
-  const team_id = core.getInput('team_id');
+  const token = core.getInput('token')
+  const teamId = core.getInput('team_id')
   core.setSecret(token)
-  core.setSecret(team_id)
+  core.setSecret(teamId)
   const body = {
-    team_id,
+    team_id: teamId,
     event_name: core.getInput('event_name'),
     event_action: core.getInput('event_action'),
     environment: core.getInput('environment') || null,
@@ -13470,17 +13491,17 @@ const run = async (context) => {
     branch: core.getInput('branch') || getBranch(eventName, payload),
     commit: core.getInput('commit') || getSha(eventName, payload),
     repo: payload.repository.full_name
-  };
+  }
   return got.post('https://events.cto.ai/', {
-    headers: { 
+    headers: {
       Authorization: `Bearer ${token}`,
       'x-ops-mechanism': 'github-action'
     },
     json: body
-  });
+  })
 }
 
-module.exports = { run };
+module.exports = { run }
 
 
 /***/ }),

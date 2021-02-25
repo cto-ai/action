@@ -5092,12 +5092,14 @@ module.exports = (fromStream, toStream) => {
 /***/ }),
 
 /***/ 6417:
-/***/ ((module, exports, __nccwpck_require__) => {
+/***/ ((module, exports) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const tls_1 = __nccwpck_require__(4016);
+function isTLSSocket(socket) {
+    return socket.encrypted;
+}
 const deferToConnect = (socket, fn) => {
     let listeners;
     if (typeof fn === 'function') {
@@ -5114,7 +5116,7 @@ const deferToConnect = (socket, fn) => {
         if (hasConnectListener) {
             listeners.connect();
         }
-        if (socket instanceof tls_1.TLSSocket && hasSecureConnectListener) {
+        if (isTLSSocket(socket) && hasSecureConnectListener) {
             if (socket.authorized) {
                 listeners.secureConnect();
             }
@@ -13401,10 +13403,10 @@ const { run } = __nccwpck_require__(2490);
 
 (async () => {
   try {
-    await run()
-    console.log('Successfully sent event data!')
+    await run();
+    console.log('Successfully sent event data!');
   } catch (err) {
-    core.setFailed(`Ops Platform Action failed with error: ${err}`)
+    core.setFailed(`Ops Platform Action failed with error: ${err}`);
   }
 })();
 
@@ -13418,9 +13420,9 @@ const { run } = __nccwpck_require__(2490);
 "use strict";
 
 
-const core = __nccwpck_require__(9898);
-const github = __nccwpck_require__(7317);
-const got = __nccwpck_require__(505);
+const core = __nccwpck_require__(9898)
+const github = __nccwpck_require__(7317)
+const got = __nccwpck_require__(505)
 
 /**
  * Helper function to extract branch if not specified.
@@ -13430,21 +13432,21 @@ const got = __nccwpck_require__(505);
  */
 const getBranch = (eventName, payload) => {
   if (eventName === 'push') {
-    return payload.ref.replace('refs/heads/', '').replace('refs/tags/', '');
+    return payload.ref.replace('refs/heads/', '').replace('refs/tags/', '')
   } else if (eventName === 'pull_request') {
-    return payload.pull_request.base.ref.replace('refs/heads/', '');
+    return payload.pull_request.base.ref.replace('refs/heads/', '')
   } else if (eventName === 'deployment') {
-    return payload.deployment.ref.replace('refs/heads/', '');
+    return payload.deployment.ref.replace('refs/heads/', '')
   } else if (eventName === 'deployment_status') {
-    return payload.deployment.ref.replace('refs/heads/', '');
+    return payload.deployment.ref.replace('refs/heads/', '')
   } else if (eventName === 'package') {
-    return payload.package.package_version.release.target_commitish;
+    return payload.package.package_version.release.target_commitish
   } else if (eventName === 'release') {
-    return payload.release.target_commitish;
+    return payload.release.target_commitish
   } else if (eventName === 'status') {
-    return payload.branches[0].name.replace('refs/heads/', '');
+    return payload.branches[0].name.replace('refs/heads/', '')
   }
-  return null;
+  return null
 }
 
 /**
@@ -13455,17 +13457,17 @@ const getBranch = (eventName, payload) => {
  */
 const getSha = (eventName, payload) => {
   if (eventName === 'push') {
-    return payload.before;
+    return payload.before
   } else if (eventName === 'pull_request') {
-    return payload.pull_request.head.sha;
+    return payload.pull_request.head.sha
   } else if (eventName === 'deployment') {
-    return payload.deployment.sha;
+    return payload.deployment.sha
   } else if (eventName === 'deployment_status') {
-    return payload.deployment.sha;
+    return payload.deployment.sha
   } else if (eventName === 'status') {
-    return payload.sha;
+    return payload.sha
   }
-  return null;
+  return null
 }
 
 /**
@@ -13476,12 +13478,12 @@ const getSha = (eventName, payload) => {
 const run = async (context) => {
   const eventName = context != null ? context.eventName : github.context.eventName
   const payload = context != null ? context.payload : github.context.payload
-  const token = core.getInput('token');
-  const team_id = core.getInput('team_id');
+  const token = core.getInput('token')
+  const teamId = core.getInput('team_id')
   core.setSecret(token)
-  core.setSecret(team_id)
+  core.setSecret(teamId)
   const body = {
-    team_id,
+    team_id: teamId,
     event_name: core.getInput('event_name'),
     event_action: core.getInput('event_action'),
     environment: core.getInput('environment') || null,
@@ -13489,17 +13491,17 @@ const run = async (context) => {
     branch: core.getInput('branch') || getBranch(eventName, payload),
     commit: core.getInput('commit') || getSha(eventName, payload),
     repo: payload.repository.full_name
-  };
+  }
   return got.post('https://events.cto.ai/', {
-    headers: { 
+    headers: {
       Authorization: `Bearer ${token}`,
       'x-ops-mechanism': 'github-action'
     },
     json: body
-  });
+  })
 }
 
-module.exports = { run };
+module.exports = { run }
 
 
 /***/ }),

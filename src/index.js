@@ -5,10 +5,10 @@ const { run } = require('./run');
 
 (async () => {
   try {
-    await run()
-    console.log('Successfully sent event data!')
+    await run();
+    console.log('Successfully sent event data!');
   } catch (err) {
-    core.setFailed(`Ops Platform Action failed with error: ${err}`)
+    core.setFailed(`Ops Platform Action failed with error: ${err}`);
   }
 })();
 

@@ -14,7 +14,10 @@ const package_payload = require('./fixtures/package')
 const release_payload = require('./fixtures/release')
 const issue_payload = require('./fixtures/issue')
 
-const TOKEN = 'jifeo2903u089jf3920'
+// These params are used for integration testing.
+const { NOCK_ENABLED, OPS_PLATFORM_TEST_TOKEN } = process.env
+
+const TOKEN = OPS_PLATFORM_TEST_TOKEN || 'jifeo2903u089jf3920'
 const TEAM_ID = 'i992-j9f23j09-j092j0'
 
 const setInput = (name, value) => {
@@ -36,21 +39,25 @@ test('Push event with only required fields has additional data added', async ({ 
     payload: push_payload
   }
 
-  const req = nock('https://events.cto.ai')
-    .post('/', {
-      team_id: TEAM_ID,
-      event_name: 'deployment',
-      event_action: 'succeeded',
-      environment: null,
-      image: null,
-      branch: 'simple-tag',
-      commit: '6113728f27ae82c7b1a177c8d03f9e96e0adf246',
-      repo: 'Codertocat/Hello-World'
-    })
-    .reply(200, { message: 'event written', data: {} })
+  if (NOCK_ENABLED) {
+    nock('https://events.cto.ai')
+      .matchHeader('authorization', `Bearer ${TOKEN}`)
+      .post('/', {
+        team_id: TEAM_ID,
+        event_name: 'deployment',
+        event_action: 'succeeded',
+        environment: null,
+        image: null,
+        branch: 'simple-tag',
+        commit: '6113728f27ae82c7b1a177c8d03f9e96e0adf246',
+        repo: 'Codertocat/Hello-World'
+      })
+      .reply(200, { message: 'event written', data: {} })
+  }
 
-  await run(context)
-  is(req.isDone(), true)
+  const res = await run(context)
+  is(res.statusCode, 200)
+  is(JSON.parse(res.body).message, 'event written')
 
   clearInput('token')
   clearInput('team_id')
@@ -73,21 +80,25 @@ test('Push event with all parameters passed, uses the overwriting values', async
     payload: push_payload
   }
 
-  const req = nock('https://events.cto.ai')
-    .post('/', {
-      team_id: TEAM_ID,
-      event_name: 'deployment',
-      event_action: 'succeeded',
-      environment: 'test',
-      image: 'image-1',
-      branch: 'branch-1',
-      commit: '88888',
-      repo: 'Codertocat/Hello-World'
-    })
-    .reply(200, { message: 'event written', data: {} })
+  if (NOCK_ENABLED) {
+    nock('https://events.cto.ai')
+      .matchHeader('authorization', `Bearer ${TOKEN}`)
+      .post('/', {
+        team_id: TEAM_ID,
+        event_name: 'deployment',
+        event_action: 'succeeded',
+        environment: 'test',
+        image: 'image-1',
+        branch: 'branch-1',
+        commit: '88888',
+        repo: 'Codertocat/Hello-World'
+      })
+      .reply(200, { message: 'event written', data: {} })
+  }
 
-  await run(context)
-  is(req.isDone(), true)
+  const res = await run(context)
+  is(res.statusCode, 200)
+  is(JSON.parse(res.body).message, 'event written')
 
   clearInput('token')
   clearInput('team_id')
@@ -110,21 +121,25 @@ test('Pull Request event with only required fields has additional data added', a
     payload: pull_request_payload
   }
 
-  const req = nock('https://events.cto.ai')
-    .post('/', {
-      team_id: TEAM_ID,
-      event_name: 'deployment',
-      event_action: 'succeeded',
-      environment: null,
-      image: null,
-      branch: 'master',
-      commit: 'ec26c3e57ca3a959ca5aad62de7213c562f8c821',
-      repo: 'Codertocat/Hello-World'
-    })
-    .reply(200, { message: 'event written', data: {} })
+  if (NOCK_ENABLED) {
+    nock('https://events.cto.ai')
+      .matchHeader('authorization', `Bearer ${TOKEN}`)
+      .post('/', {
+        team_id: TEAM_ID,
+        event_name: 'deployment',
+        event_action: 'succeeded',
+        environment: null,
+        image: null,
+        branch: 'master',
+        commit: 'ec26c3e57ca3a959ca5aad62de7213c562f8c821',
+        repo: 'Codertocat/Hello-World'
+      })
+      .reply(200, { message: 'event written', data: {} })
+  }
 
-  await run(context)
-  is(req.isDone(), true)
+  const res = await run(context)
+  is(res.statusCode, 200)
+  is(JSON.parse(res.body).message, 'event written')
 
   clearInput('token')
   clearInput('team_id')
@@ -147,21 +162,25 @@ test('Pull Request event with all parameters passed, uses the overwriting values
     payload: pull_request_payload
   }
 
-  const req = nock('https://events.cto.ai')
-    .post('/', {
-      team_id: TEAM_ID,
-      event_name: 'deployment',
-      event_action: 'succeeded',
-      environment: 'test',
-      image: 'image-1',
-      branch: 'branch-1',
-      commit: '88888',
-      repo: 'Codertocat/Hello-World'
-    })
-    .reply(200, { message: 'event written', data: {} })
+  if (NOCK_ENABLED) {
+    nock('https://events.cto.ai')
+      .matchHeader('authorization', `Bearer ${TOKEN}`)
+      .post('/', {
+        team_id: TEAM_ID,
+        event_name: 'deployment',
+        event_action: 'succeeded',
+        environment: 'test',
+        image: 'image-1',
+        branch: 'branch-1',
+        commit: '88888',
+        repo: 'Codertocat/Hello-World'
+      })
+      .reply(200, { message: 'event written', data: {} })
+  }
 
-  await run(context)
-  is(req.isDone(), true)
+  const res = await run(context)
+  is(res.statusCode, 200)
+  is(JSON.parse(res.body).message, 'event written')
 
   clearInput('token')
   clearInput('team_id')
@@ -184,21 +203,25 @@ test('Deployment event with only required fields has additional data added', asy
     payload: deployment_payload
   }
 
-  const req = nock('https://events.cto.ai')
-    .post('/', {
-      team_id: TEAM_ID,
-      event_name: 'deployment',
-      event_action: 'succeeded',
-      environment: null,
-      image: null,
-      branch: 'master',
-      commit: 'f95f852bd8fca8fcc58a9a2d6c842781e32a215e',
-      repo: 'Codertocat/Hello-World'
-    })
-    .reply(200, { message: 'event written', data: {} })
+  if (NOCK_ENABLED) {
+    nock('https://events.cto.ai')
+      .matchHeader('authorization', `Bearer ${TOKEN}`)
+      .post('/', {
+        team_id: TEAM_ID,
+        event_name: 'deployment',
+        event_action: 'succeeded',
+        environment: null,
+        image: null,
+        branch: 'master',
+        commit: 'f95f852bd8fca8fcc58a9a2d6c842781e32a215e',
+        repo: 'Codertocat/Hello-World'
+      })
+      .reply(200, { message: 'event written', data: {} })
+  }
 
-  await run(context)
-  is(req.isDone(), true)
+  const res = await run(context)
+  is(res.statusCode, 200)
+  is(JSON.parse(res.body).message, 'event written')
 
   clearInput('token')
   clearInput('team_id')
@@ -221,21 +244,25 @@ test('Deployment event with all parameters passed, uses the overwriting values',
     payload: deployment_payload
   }
 
-  const req = nock('https://events.cto.ai')
-    .post('/', {
-      team_id: TEAM_ID,
-      event_name: 'deployment',
-      event_action: 'succeeded',
-      environment: 'test',
-      image: 'image-1',
-      branch: 'branch-1',
-      commit: '88888',
-      repo: 'Codertocat/Hello-World'
-    })
-    .reply(200, { message: 'event written', data: {} })
+  if (NOCK_ENABLED) {
+    nock('https://events.cto.ai')
+      .matchHeader('authorization', `Bearer ${TOKEN}`)
+      .post('/', {
+        team_id: TEAM_ID,
+        event_name: 'deployment',
+        event_action: 'succeeded',
+        environment: 'test',
+        image: 'image-1',
+        branch: 'branch-1',
+        commit: '88888',
+        repo: 'Codertocat/Hello-World'
+      })
+      .reply(200, { message: 'event written', data: {} })
+  }
 
-  await run(context)
-  is(req.isDone(), true)
+  const res = await run(context)
+  is(res.statusCode, 200)
+  is(JSON.parse(res.body).message, 'event written')
 
   clearInput('token')
   clearInput('team_id')
@@ -258,21 +285,25 @@ test('Deployment Status event with only required fields has additional data adde
     payload: deployment_status_payload
   }
 
-  const req = nock('https://events.cto.ai')
-    .post('/', {
-      team_id: TEAM_ID,
-      event_name: 'deployment',
-      event_action: 'succeeded',
-      environment: null,
-      image: null,
-      branch: 'master',
-      commit: 'f95f852bd8fca8fcc58a9a2d6c842781e32a215e',
-      repo: 'Codertocat/Hello-World'
-    })
-    .reply(200, { message: 'event written', data: {} })
+  if (NOCK_ENABLED) {
+    nock('https://events.cto.ai')
+      .matchHeader('authorization', `Bearer ${TOKEN}`)
+      .post('/', {
+        team_id: TEAM_ID,
+        event_name: 'deployment',
+        event_action: 'succeeded',
+        environment: null,
+        image: null,
+        branch: 'master',
+        commit: 'f95f852bd8fca8fcc58a9a2d6c842781e32a215e',
+        repo: 'Codertocat/Hello-World'
+      })
+      .reply(200, { message: 'event written', data: {} })
+  }
 
-  await run(context)
-  is(req.isDone(), true)
+  const res = await run(context)
+  is(res.statusCode, 200)
+  is(JSON.parse(res.body).message, 'event written')
 
   clearInput('token')
   clearInput('team_id')
@@ -295,21 +326,25 @@ test('Deployment Status event with all parameters passed, uses the overwriting v
     payload: deployment_status_payload
   }
 
-  const req = nock('https://events.cto.ai')
-    .post('/', {
-      team_id: TEAM_ID,
-      event_name: 'deployment',
-      event_action: 'succeeded',
-      environment: 'test',
-      image: 'image-1',
-      branch: 'branch-1',
-      commit: '88888',
-      repo: 'Codertocat/Hello-World'
-    })
-    .reply(200, { message: 'event written', data: {} })
+  if (NOCK_ENABLED) {
+    nock('https://events.cto.ai')
+      .matchHeader('authorization', `Bearer ${TOKEN}`)
+      .post('/', {
+        team_id: TEAM_ID,
+        event_name: 'deployment',
+        event_action: 'succeeded',
+        environment: 'test',
+        image: 'image-1',
+        branch: 'branch-1',
+        commit: '88888',
+        repo: 'Codertocat/Hello-World'
+      })
+      .reply(200, { message: 'event written', data: {} })
+  }
 
-  await run(context)
-  is(req.isDone(), true)
+  const res = await run(context)
+  is(res.statusCode, 200)
+  is(JSON.parse(res.body).message, 'event written')
 
   clearInput('token')
   clearInput('team_id')
@@ -332,21 +367,25 @@ test('Deployment Status event with only required fields has additional data adde
     payload: deployment_status_payload
   }
 
-  const req = nock('https://events.cto.ai')
-    .post('/', {
-      team_id: TEAM_ID,
-      event_name: 'deployment',
-      event_action: 'succeeded',
-      environment: null,
-      image: null,
-      branch: 'master',
-      commit: 'f95f852bd8fca8fcc58a9a2d6c842781e32a215e',
-      repo: 'Codertocat/Hello-World'
-    })
-    .reply(200, { message: 'event written', data: {} })
+  if (NOCK_ENABLED) {
+    nock('https://events.cto.ai')
+      .matchHeader('authorization', `Bearer ${TOKEN}`)
+      .post('/', {
+        team_id: TEAM_ID,
+        event_name: 'deployment',
+        event_action: 'succeeded',
+        environment: null,
+        image: null,
+        branch: 'master',
+        commit: 'f95f852bd8fca8fcc58a9a2d6c842781e32a215e',
+        repo: 'Codertocat/Hello-World'
+      })
+      .reply(200, { message: 'event written', data: {} })
+  }
 
-  await run(context)
-  is(req.isDone(), true)
+  const res = await run(context)
+  is(res.statusCode, 200)
+  is(JSON.parse(res.body).message, 'event written')
 
   clearInput('token')
   clearInput('team_id')
@@ -369,21 +408,25 @@ test('Deployment Status event with all parameters passed, uses the overwriting v
     payload: deployment_status_payload
   }
 
-  const req = nock('https://events.cto.ai')
-    .post('/', {
-      team_id: TEAM_ID,
-      event_name: 'deployment',
-      event_action: 'succeeded',
-      environment: 'test',
-      image: 'image-1',
-      branch: 'branch-1',
-      commit: '88888',
-      repo: 'Codertocat/Hello-World'
-    })
-    .reply(200, { message: 'event written', data: {} })
+  if (NOCK_ENABLED) {
+    nock('https://events.cto.ai')
+      .matchHeader('authorization', `Bearer ${TOKEN}`)
+      .post('/', {
+        team_id: TEAM_ID,
+        event_name: 'deployment',
+        event_action: 'succeeded',
+        environment: 'test',
+        image: 'image-1',
+        branch: 'branch-1',
+        commit: '88888',
+        repo: 'Codertocat/Hello-World'
+      })
+      .reply(200, { message: 'event written', data: {} })
+  }
 
-  await run(context)
-  is(req.isDone(), true)
+  const res = await run(context)
+  is(res.statusCode, 200)
+  is(JSON.parse(res.body).message, 'event written')
 
   clearInput('token')
   clearInput('team_id')
@@ -406,21 +449,25 @@ test('Status event with only required fields has additional data added', async (
     payload: status_payload
   }
 
-  const req = nock('https://events.cto.ai')
-    .post('/', {
-      team_id: TEAM_ID,
-      event_name: 'deployment',
-      event_action: 'succeeded',
-      environment: null,
-      image: null,
-      branch: 'master',
-      commit: '6113728f27ae82c7b1a177c8d03f9e96e0adf246',
-      repo: 'Codertocat/Hello-World'
-    })
-    .reply(200, { message: 'event written', data: {} })
+  if (NOCK_ENABLED) {
+    nock('https://events.cto.ai')
+      .matchHeader('authorization', `Bearer ${TOKEN}`)
+      .post('/', {
+        team_id: TEAM_ID,
+        event_name: 'deployment',
+        event_action: 'succeeded',
+        environment: null,
+        image: null,
+        branch: 'master',
+        commit: '6113728f27ae82c7b1a177c8d03f9e96e0adf246',
+        repo: 'Codertocat/Hello-World'
+      })
+      .reply(200, { message: 'event written', data: {} })
+  }
 
-  await run(context)
-  is(req.isDone(), true)
+  const res = await run(context)
+  is(res.statusCode, 200)
+  is(JSON.parse(res.body).message, 'event written')
 
   clearInput('token')
   clearInput('team_id')
@@ -443,21 +490,25 @@ test('Status event with all parameters passed, uses the overwriting values', asy
     payload: status_payload
   }
 
-  const req = nock('https://events.cto.ai')
-    .post('/', {
-      team_id: TEAM_ID,
-      event_name: 'deployment',
-      event_action: 'succeeded',
-      environment: 'test',
-      image: 'image-1',
-      branch: 'branch-1',
-      commit: '88888',
-      repo: 'Codertocat/Hello-World'
-    })
-    .reply(200, { message: 'event written', data: {} })
+  if (NOCK_ENABLED) {
+    nock('https://events.cto.ai')
+      .matchHeader('authorization', `Bearer ${TOKEN}`)
+      .post('/', {
+        team_id: TEAM_ID,
+        event_name: 'deployment',
+        event_action: 'succeeded',
+        environment: 'test',
+        image: 'image-1',
+        branch: 'branch-1',
+        commit: '88888',
+        repo: 'Codertocat/Hello-World'
+      })
+      .reply(200, { message: 'event written', data: {} })
+  }
 
-  await run(context)
-  is(req.isDone(), true)
+  const res = await run(context)
+  is(res.statusCode, 200)
+  is(JSON.parse(res.body).message, 'event written')
 
   clearInput('token')
   clearInput('team_id')
@@ -480,21 +531,25 @@ test('Package event with only required fields has additional data added', async 
     payload: package_payload
   }
 
-  const req = nock('https://events.cto.ai')
-    .post('/', {
-      team_id: TEAM_ID,
-      event_name: 'deployment',
-      event_action: 'succeeded',
-      environment: null,
-      image: null,
-      branch: 'master',
-      commit: null,
-      repo: 'Codertocat/hello-world-npm'
-    })
-    .reply(200, { message: 'event written', data: {} })
+  if (NOCK_ENABLED) {
+    nock('https://events.cto.ai')
+      .matchHeader('authorization', `Bearer ${TOKEN}`)
+      .post('/', {
+        team_id: TEAM_ID,
+        event_name: 'deployment',
+        event_action: 'succeeded',
+        environment: null,
+        image: null,
+        branch: 'master',
+        commit: null,
+        repo: 'Codertocat/hello-world-npm'
+      })
+      .reply(200, { message: 'event written', data: {} })
+  }
 
-  await run(context)
-  is(req.isDone(), true)
+  const res = await run(context)
+  is(res.statusCode, 200)
+  is(JSON.parse(res.body).message, 'event written')
 
   clearInput('token')
   clearInput('team_id')
@@ -517,21 +572,25 @@ test('Package event with all parameters passed, uses the overwriting values', as
     payload: package_payload
   }
 
-  const req = nock('https://events.cto.ai')
-    .post('/', {
-      team_id: TEAM_ID,
-      event_name: 'deployment',
-      event_action: 'succeeded',
-      environment: 'test',
-      image: 'image-1',
-      branch: 'branch-1',
-      commit: '88888',
-      repo: 'Codertocat/hello-world-npm'
-    })
-    .reply(200, { message: 'event written', data: {} })
+  if (NOCK_ENABLED) {
+    nock('https://events.cto.ai')
+      .matchHeader('authorization', `Bearer ${TOKEN}`)
+      .post('/', {
+        team_id: TEAM_ID,
+        event_name: 'deployment',
+        event_action: 'succeeded',
+        environment: 'test',
+        image: 'image-1',
+        branch: 'branch-1',
+        commit: '88888',
+        repo: 'Codertocat/hello-world-npm'
+      })
+      .reply(200, { message: 'event written', data: {} })
+  }
 
-  await run(context)
-  is(req.isDone(), true)
+  const res = await run(context)
+  is(res.statusCode, 200)
+  is(JSON.parse(res.body).message, 'event written')
 
   clearInput('token')
   clearInput('team_id')
@@ -554,21 +613,25 @@ test('Release event with only required fields has additional data added', async 
     payload: release_payload
   }
 
-  const req = nock('https://events.cto.ai')
-    .post('/', {
-      team_id: TEAM_ID,
-      event_name: 'deployment',
-      event_action: 'succeeded',
-      environment: null,
-      image: null,
-      branch: 'master',
-      commit: null,
-      repo: 'Codertocat/Hello-World'
-    })
-    .reply(200, { message: 'event written', data: {} })
+  if (NOCK_ENABLED) {
+    nock('https://events.cto.ai')
+      .matchHeader('authorization', `Bearer ${TOKEN}`)
+      .post('/', {
+        team_id: TEAM_ID,
+        event_name: 'deployment',
+        event_action: 'succeeded',
+        environment: null,
+        image: null,
+        branch: 'master',
+        commit: null,
+        repo: 'Codertocat/Hello-World'
+      })
+      .reply(200, { message: 'event written', data: {} })
+  }
 
-  await run(context)
-  is(req.isDone(), true)
+  const res = await run(context)
+  is(res.statusCode, 200)
+  is(JSON.parse(res.body).message, 'event written')
 
   clearInput('token')
   clearInput('team_id')
@@ -591,21 +654,25 @@ test('Release event with all parameters passed, uses the overwriting values', as
     payload: release_payload
   }
 
-  const req = nock('https://events.cto.ai')
-    .post('/', {
-      team_id: TEAM_ID,
-      event_name: 'deployment',
-      event_action: 'succeeded',
-      environment: 'test',
-      image: 'image-1',
-      branch: 'branch-1',
-      commit: '88888',
-      repo: 'Codertocat/Hello-World'
-    })
-    .reply(200, { message: 'event written', data: {} })
+  if (NOCK_ENABLED) {
+    nock('https://events.cto.ai')
+      .matchHeader('authorization', `Bearer ${TOKEN}`)
+      .post('/', {
+        team_id: TEAM_ID,
+        event_name: 'deployment',
+        event_action: 'succeeded',
+        environment: 'test',
+        image: 'image-1',
+        branch: 'branch-1',
+        commit: '88888',
+        repo: 'Codertocat/Hello-World'
+      })
+      .reply(200, { message: 'event written', data: {} })
+  }
 
-  await run(context)
-  is(req.isDone(), true)
+  const res = await run(context)
+  is(res.statusCode, 200)
+  is(JSON.parse(res.body).message, 'event written')
 
   clearInput('token')
   clearInput('team_id')
@@ -628,21 +695,25 @@ test('Event without ref or sha only gets the fields passed and repo', async ({ i
     payload: issue_payload
   }
 
-  const req = nock('https://events.cto.ai')
-    .post('/', {
-      team_id: TEAM_ID,
-      event_name: 'deployment',
-      event_action: 'succeeded',
-      environment: null,
-      image: null,
-      branch: null,
-      commit: null,
-      repo: 'Codertocat/Hello-World'
-    })
-    .reply(200, { message: 'event written', data: {} })
+  if (NOCK_ENABLED) {
+    nock('https://events.cto.ai')
+      .matchHeader('authorization', `Bearer ${TOKEN}`)
+      .post('/', {
+        team_id: TEAM_ID,
+        event_name: 'deployment',
+        event_action: 'succeeded',
+        environment: null,
+        image: null,
+        branch: null,
+        commit: null,
+        repo: 'Codertocat/Hello-World'
+      })
+      .reply(200, { message: 'event written', data: {} })
+  }
 
-  await run(context)
-  is(req.isDone(), true)
+  const res = await run(context)
+  is(res.statusCode, 200)
+  is(JSON.parse(res.body).message, 'event written')
 
   clearInput('token')
   clearInput('team_id')

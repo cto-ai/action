@@ -25,6 +25,9 @@ inputs:
   commit:
     description: 'Branch used to reference where change is taking place (If not present, action will try to use ref value if available to event type)'
     required: false
+  repo:
+    description: 'Repo used to reference where change is taking place (If not present, action will try to use the name of the repository the workflow is running in)'
+    required: false
 runs:
   using: 'node12'
   main: 'dist/index.js'

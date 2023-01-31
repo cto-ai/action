@@ -51,7 +51,7 @@ We recommend adding `environment` to help us help you differentiate multiple dep
 ```yaml
 - name: Report Deployment Succeeded
   if: ${{ success() }}
-  uses: cto-ai/action@v1.2
+  uses: cto-ai/action@v1
   id: ctoai-deployment-succeeded
   with:
     team_id: ${{ secrets.CTOAI_TEAM_ID }}
@@ -61,7 +61,7 @@ We recommend adding `environment` to help us help you differentiate multiple dep
     environment: "production"
 - name: Report Deployment Failed
   if: ${{ failure() }}
-  uses: cto-ai/action@v1.2
+  uses: cto-ai/action@v1
   id: ctoai-deployment-failed
   with:
     team_id: ${{ secrets.CTOAI_TEAM_ID }}

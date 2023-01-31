@@ -32,6 +32,9 @@ Branch used to reference where change is taking place (If not present, action wi
 ### `commit`
 Commit id to uniquely reference the event (If not present, action will try to use SHA value if available to event type)
 
+### `repo`
+Repo used to reference where change is taking place (If not present, action will try to use the name of the repository the workflow is running in)
+
 ## Recommendations
 Create 2 new secrets for your `token` and `team_id` to be passed into the action.
 

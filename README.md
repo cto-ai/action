@@ -32,6 +32,9 @@ Branch used to reference where change is taking place (If not present, action wi
 ### `commit`
 Commit id to uniquely reference the event (If not present, action will try to use SHA value if available to event type)
 
+### `repo`
+Repo used to reference where change is taking place (If not present, action will try to use the name of the repository the workflow is running in)
+
 ## Recommendations
 Create 2 new secrets for your `token` and `team_id` to be passed into the action.
 
@@ -48,7 +51,7 @@ We recommend adding `environment` to help us help you differentiate multiple dep
 ```yaml
 - name: Report Deployment Succeeded
   if: ${{ success() }}
-  uses: cto-ai/action@v1.2
+  uses: cto-ai/action@v1
   id: ctoai-deployment-succeeded
   with:
     team_id: ${{ secrets.CTOAI_TEAM_ID }}
@@ -58,7 +61,7 @@ We recommend adding `environment` to help us help you differentiate multiple dep
     environment: "production"
 - name: Report Deployment Failed
   if: ${{ failure() }}
-  uses: cto-ai/action@v1.2
+  uses: cto-ai/action@v1
   id: ctoai-deployment-failed
   with:
     team_id: ${{ secrets.CTOAI_TEAM_ID }}

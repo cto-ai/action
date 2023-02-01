@@ -70,7 +70,7 @@ const run = async (context) => {
     image: core.getInput('image') || null,
     branch: core.getInput('branch') || getBranch(eventName, payload),
     commit: core.getInput('commit') || getSha(eventName, payload),
-    repo: payload.repository.full_name
+    repo: core.getInput('repo') || payload.repository.full_name
   }
   return got.post('https://events.cto.ai/', {
     headers: {

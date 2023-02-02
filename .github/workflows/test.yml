@@ -1,15 +1,19 @@
-name: 'Test'
-on: push
+name: Test
+
+on:
+  push:
+  pull_request:
+
 jobs:
   test:
     name: Validate source code
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x, 14.x]
+        node-version: [16.x, 18.x]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         name: Use version ${{ matrix.node-version }}
         with:
           node-version: ${{ matrix.node-version }}

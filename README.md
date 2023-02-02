@@ -7,44 +7,54 @@ This Github Action allows you to extend the insights data received by CTO.ai Git
 ## Required Inputs
 
 ### `token`
+
 CTO.ai api token, follow [these docs to generate](https://cto.ai/docs/integrate-any-tool)
 
 ### `team_id`
+
 CTO.ai team ID sending the data, follow [these docs to access](https://cto.ai/docs/integrate-any-tool)
 
 ### `event_name`
+
 Name of event being sent i.e. "deployment"
 
 ### `event_action`
+
 Action associated with event i.e. "failed", "pending", or "succeeded"
 
 ## Optional Inputs
 
 ### `environment`
+
 Environment that workflow is running in.
 
 ### `image`
+
 Built image id if available
 
 ### `branch`
+
 Branch used to reference where change is taking place (If not present, action will try to use ref value if available to event type)
 
 ### `commit`
+
 Commit id to uniquely reference the event (If not present, action will try to use SHA value if available to event type)
 
 ### `repo`
+
 Repo used to reference where change is taking place (If not present, action will try to use the name of the repository the workflow is running in)
 
 ## Recommendations
+
 Create 2 new secrets for your `token` and `team_id` to be passed into the action.
 
 1. From your GitHub repo, click Settings -> Secrets -> New Secret
-  - Create CTOAI_TEAM_ID secret using your CTO.ai-issued Team Id.
-  - Create CTOAI_EVENTS_API_TOKEN secret using your CTO.ai-issued API Token.
+2. Create `CTOAI_TEAM_ID` secret using your CTO.ai-issued Team Id.
+3. Create `CTOAI_EVENTS_API_TOKEN` secret using your CTO.ai-issued API Token.
 
 ## Example Usage
 
-If you have a GitHub workflow that deploys your application (i.e. serverless, npm publish, Azure, etc), you can drop this Action in right after that step to capture the success or fail of that deployment! 
+If you have a GitHub workflow that deploys your application (i.e. serverless, npm publish, Azure, etc), you can drop this Action in right after that step to capture the success or fail of that deployment!
 
 We recommend adding `environment` to help us help you differentiate multiple deployment events from the same repository to different environments or workflows. This will be reflected on your Insights Dashboard.
 

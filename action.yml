@@ -29,5 +29,5 @@ inputs:
     description: 'Repo used to reference where change is taking place (If not present, action will try to use the name of the repository the workflow is running in)'
     required: false
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'

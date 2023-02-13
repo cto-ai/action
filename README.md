@@ -24,25 +24,31 @@ Action associated with event i.e. "failed", "pending", or "succeeded"
 
 ## Optional Inputs
 
-### `environment`
-
-Environment that workflow is running in.
-
-### `image`
-
-Built image id if available
+The following action fields are optional; however, more complex builds may
+require them.
 
 ### `branch`
 
-Branch used to reference where change is taking place (If not present, action will try to use ref value if available to event type)
+The `branch` field refers to the git branch name where the change occurs. When
+absent, the action will use the `ref` value if available to the event type.
 
 ### `commit`
 
-Commit id to uniquely reference the event (If not present, action will try to use SHA value if available to event type)
+The `commit` field refers to the commit id where the change occurs. When absent,
+the action will use the SHA value if available to the event type.
 
 ### `repo`
 
-Repo used to reference where change is taking place (If not present, action will try to use the name of the repository the workflow is running in)
+The `repo` field refers to the repository name where the change occurs. When
+absent, the action will use the repository's name where the workflow runs.
+
+### `environment`
+
+The `environment` field refers to the environment in which the workflow is running.
+
+### `image`
+
+The `image` field refers to the OCI image name or ID associated with this event.
 
 ## Recommendations
 
@@ -62,7 +68,6 @@ We recommend adding `environment` to help us help you differentiate multiple dep
 - name: Report Deployment Succeeded
   if: ${{ success() }}
   uses: cto-ai/action@v1
-  id: ctoai-deployment-succeeded
   with:
     team_id: ${{ secrets.CTOAI_TEAM_ID }}
     token: ${{ secrets.CTOAI_EVENTS_API_TOKEN }}
@@ -72,7 +77,6 @@ We recommend adding `environment` to help us help you differentiate multiple dep
 - name: Report Deployment Failed
   if: ${{ failure() }}
   uses: cto-ai/action@v1
-  id: ctoai-deployment-failed
   with:
     team_id: ${{ secrets.CTOAI_TEAM_ID }}
     token: ${{ secrets.CTOAI_EVENTS_API_TOKEN }}

@@ -19,6 +19,8 @@ const { NOCK_ENABLED, OPS_PLATFORM_TEST_TOKEN } = process.env
 
 const TOKEN = OPS_PLATFORM_TEST_TOKEN || 'jifeo2903u089jf3920'
 const TEAM_ID = 'i992-j9f23j09-j092j0'
+const USER = { user: 'Codertocat' }
+const ENDPOINT = 'https://events.cto.ai'
 
 const setInput = (name, value) => {
   process.env[`INPUT_${name.replace(/ /g, '_').toUpperCase()}`] = value
@@ -40,7 +42,7 @@ test('Push event with only required fields has additional data added', async ({ 
   }
 
   if (NOCK_ENABLED) {
-    nock('https://events.cto.ai')
+    nock(ENDPOINT)
       .matchHeader('authorization', `Bearer ${TOKEN}`)
       .post('/', {
         team_id: TEAM_ID,
@@ -50,7 +52,8 @@ test('Push event with only required fields has additional data added', async ({ 
         image: null,
         branch: 'simple-tag',
         commit: '6113728f27ae82c7b1a177c8d03f9e96e0adf246',
-        repo: 'Codertocat/Hello-World'
+        repo: 'Codertocat/Hello-World',
+        meta: USER
       })
       .reply(200, { message: 'event written', data: {} })
   }
@@ -81,7 +84,7 @@ test('Push event with all parameters passed, uses the overwriting values', async
   }
 
   if (NOCK_ENABLED) {
-    nock('https://events.cto.ai')
+    nock(ENDPOINT)
       .matchHeader('authorization', `Bearer ${TOKEN}`)
       .post('/', {
         team_id: TEAM_ID,
@@ -91,7 +94,8 @@ test('Push event with all parameters passed, uses the overwriting values', async
         image: 'image-1',
         branch: 'branch-1',
         commit: '88888',
-        repo: 'Codertocat/Hello-World'
+        repo: 'Codertocat/Hello-World',
+        meta: USER
       })
       .reply(200, { message: 'event written', data: {} })
   }
@@ -122,7 +126,7 @@ test('Pull Request event with only required fields has additional data added', a
   }
 
   if (NOCK_ENABLED) {
-    nock('https://events.cto.ai')
+    nock(ENDPOINT)
       .matchHeader('authorization', `Bearer ${TOKEN}`)
       .post('/', {
         team_id: TEAM_ID,
@@ -132,7 +136,8 @@ test('Pull Request event with only required fields has additional data added', a
         image: null,
         branch: 'master',
         commit: 'ec26c3e57ca3a959ca5aad62de7213c562f8c821',
-        repo: 'Codertocat/Hello-World'
+        repo: 'Codertocat/Hello-World',
+        meta: USER
       })
       .reply(200, { message: 'event written', data: {} })
   }
@@ -163,7 +168,7 @@ test('Pull Request event with all parameters passed, uses the overwriting values
   }
 
   if (NOCK_ENABLED) {
-    nock('https://events.cto.ai')
+    nock(ENDPOINT)
       .matchHeader('authorization', `Bearer ${TOKEN}`)
       .post('/', {
         team_id: TEAM_ID,
@@ -173,7 +178,8 @@ test('Pull Request event with all parameters passed, uses the overwriting values
         image: 'image-1',
         branch: 'branch-1',
         commit: '88888',
-        repo: 'Codertocat/Hello-World'
+        repo: 'Codertocat/Hello-World',
+        meta: USER
       })
       .reply(200, { message: 'event written', data: {} })
   }
@@ -204,7 +210,7 @@ test('Deployment event with only required fields has additional data added', asy
   }
 
   if (NOCK_ENABLED) {
-    nock('https://events.cto.ai')
+    nock(ENDPOINT)
       .matchHeader('authorization', `Bearer ${TOKEN}`)
       .post('/', {
         team_id: TEAM_ID,
@@ -214,7 +220,8 @@ test('Deployment event with only required fields has additional data added', asy
         image: null,
         branch: 'master',
         commit: 'f95f852bd8fca8fcc58a9a2d6c842781e32a215e',
-        repo: 'Codertocat/Hello-World'
+        repo: 'Codertocat/Hello-World',
+        meta: USER
       })
       .reply(200, { message: 'event written', data: {} })
   }
@@ -245,7 +252,7 @@ test('Deployment event with all parameters passed, uses the overwriting values',
   }
 
   if (NOCK_ENABLED) {
-    nock('https://events.cto.ai')
+    nock(ENDPOINT)
       .matchHeader('authorization', `Bearer ${TOKEN}`)
       .post('/', {
         team_id: TEAM_ID,
@@ -255,7 +262,8 @@ test('Deployment event with all parameters passed, uses the overwriting values',
         image: 'image-1',
         branch: 'branch-1',
         commit: '88888',
-        repo: 'Codertocat/Hello-World'
+        repo: 'Codertocat/Hello-World',
+        meta: USER
       })
       .reply(200, { message: 'event written', data: {} })
   }
@@ -286,7 +294,7 @@ test('Deployment Status event with only required fields has additional data adde
   }
 
   if (NOCK_ENABLED) {
-    nock('https://events.cto.ai')
+    nock(ENDPOINT)
       .matchHeader('authorization', `Bearer ${TOKEN}`)
       .post('/', {
         team_id: TEAM_ID,
@@ -296,7 +304,8 @@ test('Deployment Status event with only required fields has additional data adde
         image: null,
         branch: 'master',
         commit: 'f95f852bd8fca8fcc58a9a2d6c842781e32a215e',
-        repo: 'Codertocat/Hello-World'
+        repo: 'Codertocat/Hello-World',
+        meta: USER
       })
       .reply(200, { message: 'event written', data: {} })
   }
@@ -327,7 +336,7 @@ test('Deployment Status event with all parameters passed, uses the overwriting v
   }
 
   if (NOCK_ENABLED) {
-    nock('https://events.cto.ai')
+    nock(ENDPOINT)
       .matchHeader('authorization', `Bearer ${TOKEN}`)
       .post('/', {
         team_id: TEAM_ID,
@@ -337,7 +346,8 @@ test('Deployment Status event with all parameters passed, uses the overwriting v
         image: 'image-1',
         branch: 'branch-1',
         commit: '88888',
-        repo: 'Codertocat/Hello-World'
+        repo: 'Codertocat/Hello-World',
+        meta: USER
       })
       .reply(200, { message: 'event written', data: {} })
   }
@@ -368,7 +378,7 @@ test('Status event with only required fields has additional data added', async (
   }
 
   if (NOCK_ENABLED) {
-    nock('https://events.cto.ai')
+    nock(ENDPOINT)
       .matchHeader('authorization', `Bearer ${TOKEN}`)
       .post('/', {
         team_id: TEAM_ID,
@@ -378,7 +388,8 @@ test('Status event with only required fields has additional data added', async (
         image: null,
         branch: 'master',
         commit: '6113728f27ae82c7b1a177c8d03f9e96e0adf246',
-        repo: 'Codertocat/Hello-World'
+        repo: 'Codertocat/Hello-World',
+        meta: USER
       })
       .reply(200, { message: 'event written', data: {} })
   }
@@ -409,7 +420,7 @@ test('Status event with all parameters passed, uses the overwriting values', asy
   }
 
   if (NOCK_ENABLED) {
-    nock('https://events.cto.ai')
+    nock(ENDPOINT)
       .matchHeader('authorization', `Bearer ${TOKEN}`)
       .post('/', {
         team_id: TEAM_ID,
@@ -419,7 +430,8 @@ test('Status event with all parameters passed, uses the overwriting values', asy
         image: 'image-1',
         branch: 'branch-1',
         commit: '88888',
-        repo: 'Codertocat/Hello-World'
+        repo: 'Codertocat/Hello-World',
+        meta: USER
       })
       .reply(200, { message: 'event written', data: {} })
   }
@@ -450,7 +462,7 @@ test('Package event with only required fields has additional data added', async 
   }
 
   if (NOCK_ENABLED) {
-    nock('https://events.cto.ai')
+    nock(ENDPOINT)
       .matchHeader('authorization', `Bearer ${TOKEN}`)
       .post('/', {
         team_id: TEAM_ID,
@@ -460,7 +472,8 @@ test('Package event with only required fields has additional data added', async 
         image: null,
         branch: 'master',
         commit: null,
-        repo: 'Codertocat/hello-world-npm'
+        repo: 'Codertocat/hello-world-npm',
+        meta: USER
       })
       .reply(200, { message: 'event written', data: {} })
   }
@@ -491,7 +504,7 @@ test('Package event with all parameters passed, uses the overwriting values', as
   }
 
   if (NOCK_ENABLED) {
-    nock('https://events.cto.ai')
+    nock(ENDPOINT)
       .matchHeader('authorization', `Bearer ${TOKEN}`)
       .post('/', {
         team_id: TEAM_ID,
@@ -501,7 +514,8 @@ test('Package event with all parameters passed, uses the overwriting values', as
         image: 'image-1',
         branch: 'branch-1',
         commit: '88888',
-        repo: 'Codertocat/hello-world-npm'
+        repo: 'Codertocat/hello-world-npm',
+        meta: USER
       })
       .reply(200, { message: 'event written', data: {} })
   }
@@ -532,7 +546,7 @@ test('Release event with only required fields has additional data added', async 
   }
 
   if (NOCK_ENABLED) {
-    nock('https://events.cto.ai')
+    nock(ENDPOINT)
       .matchHeader('authorization', `Bearer ${TOKEN}`)
       .post('/', {
         team_id: TEAM_ID,
@@ -542,7 +556,8 @@ test('Release event with only required fields has additional data added', async 
         image: null,
         branch: 'master',
         commit: null,
-        repo: 'Codertocat/Hello-World'
+        repo: 'Codertocat/Hello-World',
+        meta: USER
       })
       .reply(200, { message: 'event written', data: {} })
   }
@@ -573,7 +588,7 @@ test('Release event with all parameters passed, uses the overwriting values', as
   }
 
   if (NOCK_ENABLED) {
-    nock('https://events.cto.ai')
+    nock(ENDPOINT)
       .matchHeader('authorization', `Bearer ${TOKEN}`)
       .post('/', {
         team_id: TEAM_ID,
@@ -583,7 +598,8 @@ test('Release event with all parameters passed, uses the overwriting values', as
         image: 'image-1',
         branch: 'branch-1',
         commit: '88888',
-        repo: 'Codertocat/Hello-World'
+        repo: 'Codertocat/Hello-World',
+        meta: USER
       })
       .reply(200, { message: 'event written', data: {} })
   }
@@ -614,7 +630,7 @@ test('Event without ref or sha only gets the fields passed and repo', async ({ i
   }
 
   if (NOCK_ENABLED) {
-    nock('https://events.cto.ai')
+    nock(ENDPOINT)
       .matchHeader('authorization', `Bearer ${TOKEN}`)
       .post('/', {
         team_id: TEAM_ID,
@@ -624,7 +640,8 @@ test('Event without ref or sha only gets the fields passed and repo', async ({ i
         image: null,
         branch: null,
         commit: null,
-        repo: 'Codertocat/Hello-World'
+        repo: 'Codertocat/Hello-World',
+        meta: USER
       })
       .reply(200, { message: 'event written', data: {} })
   }

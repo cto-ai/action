@@ -42,6 +42,11 @@ the action will use the SHA value if available to the event type.
 The `repo` field refers to the repository name where the change occurs. When
 absent, the action will use the repository's name where the workflow runs.
 
+### `actor`
+
+The `actor` field refers to the user or entity that triggered the event. When
+absent, the action will use the `actor` value if available to the event type.
+
 ### `environment`
 
 The `environment` field refers to the environment in which the workflow is running.

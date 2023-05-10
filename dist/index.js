@@ -18233,7 +18233,7 @@ const getSha = (eventName, payload) => {
 const run = async (context) => {
   const eventName = context != null ? context.eventName : github.context.eventName
   const payload = context != null ? context.payload : github.context.payload
-  const actor = payload.sender ? payload.sender.login : ''
+  const login = payload.sender ? payload.sender.login : ''
   const token = core.getInput('token')
   const teamId = core.getInput('team_id')
   core.setSecret(token)
@@ -18247,7 +18247,7 @@ const run = async (context) => {
     branch: core.getInput('branch') || getBranch(eventName, payload),
     commit: core.getInput('commit') || getSha(eventName, payload),
     repo: core.getInput('repo') || payload.repository.full_name,
-    meta: { user: core.getInput('actor') || actor }
+    meta: { user: login }
   }
   return got.post('https://events.cto.ai/', {
     headers: {

@@ -20,7 +20,7 @@ Name of event being sent i.e. "deployment"
 
 ### `event_action`
 
-Action associated with event i.e. "failed", "pending", or "succeeded"
+Action associated with event i.e. "failure", "pending", or "success"
 
 ## Optional Inputs
 
@@ -72,7 +72,7 @@ We recommend adding `environment` to help us help you differentiate multiple dep
     team_id: ${{ secrets.CTOAI_TEAM_ID }}
     token: ${{ secrets.CTOAI_EVENTS_API_TOKEN }}
     event_name: "deployment"
-    event_action: "succeeded"
+    event_action: "success"
     environment: "production"
 - name: Report Deployment Failed
   if: ${{ failure() }}
@@ -81,6 +81,6 @@ We recommend adding `environment` to help us help you differentiate multiple dep
     team_id: ${{ secrets.CTOAI_TEAM_ID }}
     token: ${{ secrets.CTOAI_EVENTS_API_TOKEN }}
     event_name: "deployment"
-    event_action: "failed"
+    event_action: "failure"
     environment: "production"
 ```

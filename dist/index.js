@@ -18267,8 +18267,8 @@ const run = async (context) => {
   core.setSecret(token)
   core.setSecret(teamId)
 
-  const branch = core.getInput('branch') || (currentCtx.ref != null ? getBranchFromGithubRef(context.ref) : getBranch(eventName, payload))
-  const commit = core.getInput('commit') || (currentCtx.sha != null ? context.sha : getSha(eventName, payload))
+  const branch = core.getInput('branch') || (currentCtx.ref != null ? getBranchFromGithubRef(currentCtx.ref) : getBranch(eventName, payload))
+  const commit = core.getInput('commit') || (currentCtx.sha != null ? currentCtx.sha : getSha(eventName, payload))
   const body = {
     team_id: teamId,
     event_name: core.getInput('event_name'),
@@ -18280,6 +18280,8 @@ const run = async (context) => {
     repo: core.getInput('repo') || payload.repository.full_name,
     meta: { user: login }
   }
+  console.log('== Body ==')
+  console.dir(body)
   return got.post('https://events.cto.ai/', {
     headers: {
       Authorization: `Bearer ${token}`,

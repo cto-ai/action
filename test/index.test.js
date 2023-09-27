@@ -655,3 +655,48 @@ test('Event without ref or sha only gets the fields passed and repo', async ({ i
   clearInput('event_name')
   clearInput('event_action')
 })
+
+test('fetch commit and branch from context', async ({ is }) => {
+  setInput('token', TOKEN)
+  setInput('team_id', TEAM_ID)
+  setInput('event_name', 'deployment')
+  setInput('event_action', 'succeeded')
+  setInput('environment', 'test')
+
+  const context = {
+    eventName: 'deployment',
+    payload: deploymentPayload,
+    sha: 'f76e630a4d99b69a8f9e4de16cc8d64e0eeb033b',
+    ref: 'refs/heads/branch-1'
+  }
+
+  if (NOCK_ENABLED) {
+    nock(ENDPOINT)
+      .matchHeader('authorization', `Bearer ${TOKEN}`)
+      .post('/', {
+        team_id: TEAM_ID,
+        event_name: 'deployment',
+        event_action: 'succeeded',
+        environment: 'test',
+        image: null,
+        branch: 'branch-1',
+        commit: 'f76e630a4d99b69a8f9e4de16cc8d64e0eeb033b',
+        repo: 'Codertocat/Hello-World',
+        meta: USER
+      })
+      .reply(200, { message: 'event written', data: {} })
+  }
+
+  const res = await run(context)
+  is(res.statusCode, 200)
+  is(JSON.parse(res.body).message, 'event written')
+
+  clearInput('token')
+  clearInput('team_id')
+  clearInput('event_name')
+  clearInput('event_action')
+  clearInput('environment')
+  clearInput('image')
+  clearInput('branch')
+  clearInput('commit')
+})

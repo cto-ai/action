@@ -18280,9 +18280,7 @@ const run = async (context) => {
     repo: core.getInput('repo') || payload.repository.full_name,
     meta: { user: login }
   }
-  console.log('== Body ==')
-  console.dir(body)
-  return got.post('https://events.cto.ai/', {
+  return got.post('https://events.stg.cto.ai/', {
     headers: {
       Authorization: `Bearer ${token}`,
       'x-ops-mechanism': 'github-action'

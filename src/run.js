@@ -51,10 +51,11 @@ const getSha = (eventName, payload) => {
 }
 
 const getBranchFromGithubRef = (ref) => {
-  if (ref.startsWith('refs/')) {
-    const tokens = ref.split('/')
-    return (tokens.length === 3 ? tokens[2] : ref)
+  const tokens = ref.split('/')
+  if (ref.startsWith('refs/') && tokens.length > 2) {
+    return tokens[2]
   }
+  console.warn(`ref is not in format ref/*/*, so ${ref} is being used instead`)
   return ref
 }
 

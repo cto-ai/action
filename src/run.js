@@ -50,27 +50,40 @@ const getSha = (eventName, payload) => {
   return null
 }
 
+const getBranchFromGithubRef = (ref) => {
+  const tokens = ref.split('/')
+  if (ref.startsWith('refs/') && tokens.length > 2) {
+    return tokens[2]
+  }
+  console.warn(`ref is not in format ref/*/*, so ${ref} is being used instead`)
+  return ref
+}
+
 /**
  * Main entrypoint for action that collects up data and sends to insights api.
  * @param {(Object|null)} context - optional param used for injecting in tests that matches github.context format.
  * @returns {Promise} sent request data payload to events api
  */
 const run = async (context) => {
-  const eventName = context != null ? context.eventName : github.context.eventName
-  const payload = context != null ? context.payload : github.context.payload
+  const currentCtx = context != null ? context : github.context
+  const eventName = currentCtx.eventName
+  const payload = currentCtx.payload
   const login = payload.sender ? payload.sender.login : ''
   const token = core.getInput('token')
   const teamId = core.getInput('team_id')
   core.setSecret(token)
   core.setSecret(teamId)
+
+  const branch = core.getInput('branch') || (currentCtx.ref != null ? getBranchFromGithubRef(currentCtx.ref) : getBranch(eventName, payload))
+  const commit = core.getInput('commit') || (currentCtx.sha != null ? currentCtx.sha : getSha(eventName, payload))
   const body = {
     team_id: teamId,
     event_name: core.getInput('event_name'),
     event_action: core.getInput('event_action'),
     environment: core.getInput('environment') || null,
     image: core.getInput('image') || null,
-    branch: core.getInput('branch') || getBranch(eventName, payload),
-    commit: core.getInput('commit') || getSha(eventName, payload),
+    branch,
+    commit,
     repo: core.getInput('repo') || payload.repository.full_name,
     meta: { user: login }
   }

@@ -558,7 +558,7 @@ class OidcClient {
                 .catch(error => {
                 throw new Error(`Failed to get ID Token. \n 
         Error Code : ${error.statusCode}\n 
-        Error Message: ${error.result.message}`);
+        Error Message: ${error.message}`);
             });
             const id_token = (_a = res.result) === null || _a === void 0 ? void 0 : _a.value;
             if (!id_token) {
@@ -2032,6 +2032,19 @@ class HttpClientResponse {
             }));
         });
     }
+    readBodyBuffer() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve) => __awaiter(this, void 0, void 0, function* () {
+                const chunks = [];
+                this.message.on('data', (chunk) => {
+                    chunks.push(chunk);
+                });
+                this.message.on('end', () => {
+                    resolve(Buffer.concat(chunks));
+                });
+            }));
+        });
+    }
 }
 exports.HttpClientResponse = HttpClientResponse;
 function isHttps(requestUrl) {
@@ -2536,7 +2549,13 @@ function getProxyUrl(reqUrl) {
         }
     })();
     if (proxyVar) {
-        return new URL(proxyVar);
+        try {
+            return new URL(proxyVar);
+        }
+        catch (_a) {
+            if (!proxyVar.startsWith('http://') && !proxyVar.startsWith('https://'))
+                return new URL(`http://${proxyVar}`);
+        }
     }
     else {
         return undefined;
@@ -12257,7 +12276,7 @@ class Keyv extends EventEmitter {
 			for await (const [key, raw] of typeof iterator === 'function'
 				? iterator(this.opts.store.namespace)
 				: iterator) {
-				const data = this.opts.deserialize(raw);
+				const data = await this.opts.deserialize(raw);
 				if (this.opts.store.namespace && !key.includes(this.opts.store.namespace)) {
 					continue;
 				}
@@ -13886,10 +13905,6 @@ function getNodeRequestOptions(request) {
 		agent = agent(parsedURL);
 	}
 
-	if (!headers.has('Connection') && !agent) {
-		headers.set('Connection', 'close');
-	}
-
 	// HTTP-network fetch step 4.2
 	// chunked encoding is handled by Node.js
 
@@ -14263,8 +14278,11 @@ function fixResponseChunkedTransferBadEnding(request, errorCallback) {
 
 		if (headers['transfer-encoding'] === 'chunked' && !headers['content-length']) {
 			response.once('close', function (hadError) {
+				// tests for socket presence, as in some situations the
+				// the 'socket' event is not triggered for the request
+				// (happens in deno), avoids `TypeError`
 				// if a data listener is still present we didn't end cleanly
-				const hasDataListener = socket.listenerCount('data') > 0;
+				const hasDataListener = socket && socket.listenerCount('data') > 0;
 
 				if (hasDataListener && !hadError) {
 					const err = new Error('Premature close');
@@ -14306,6 +14324,7 @@ exports.Headers = Headers;
 exports.Request = Request;
 exports.Response = Response;
 exports.FetchError = FetchError;
+exports.AbortError = AbortError;
 
 
 /***/ }),
@@ -18225,27 +18244,39 @@ const getSha = (eventName, payload) => {
   return null
 }
 
+const getBranchFromGithubRef = (ref) => {
+  if (ref.startsWith('refs/')) {
+    const tokens = ref.split('/')
+    return (tokens.length === 3 ? tokens[2] : ref)
+  }
+  return ref
+}
+
 /**
  * Main entrypoint for action that collects up data and sends to insights api.
  * @param {(Object|null)} context - optional param used for injecting in tests that matches github.context format.
  * @returns {Promise} sent request data payload to events api
  */
 const run = async (context) => {
-  const eventName = context != null ? context.eventName : github.context.eventName
-  const payload = context != null ? context.payload : github.context.payload
+  const currentCtx = context != null ? context : github.context
+  const eventName = currentCtx.eventName
+  const payload = currentCtx.payload
   const login = payload.sender ? payload.sender.login : ''
   const token = core.getInput('token')
   const teamId = core.getInput('team_id')
   core.setSecret(token)
   core.setSecret(teamId)
+
+  const branch = core.getInput('branch') || (currentCtx.ref != null ? getBranchFromGithubRef(currentCtx.ref) : getBranch(eventName, payload))
+  const commit = core.getInput('commit') || (currentCtx.sha != null ? currentCtx.sha : getSha(eventName, payload))
   const body = {
     team_id: teamId,
     event_name: core.getInput('event_name'),
     event_action: core.getInput('event_action'),
     environment: core.getInput('environment') || null,
     image: core.getInput('image') || null,
-    branch: core.getInput('branch') || getBranch(eventName, payload),
-    commit: core.getInput('commit') || getSha(eventName, payload),
+    branch,
+    commit,
     repo: core.getInput('repo') || payload.repository.full_name,
     meta: { user: login }
   }
